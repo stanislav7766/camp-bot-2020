@@ -1,0 +1,29 @@
+{
+  "name": "camp-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "stanislav7766",
+  "scripts": {
+    "live": "nodemon",
+    "build": "webpack --mode development"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "telegraf": "^3.38.0",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/runtime": "^7.10.4",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "dotenv-webpack": "^2.0.0",
+    "nodemon": "^2.0.4",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-node-externals": "^2.5.0"
+  }
+}
