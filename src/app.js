@@ -1,7 +1,9 @@
-import Telegraf, { Markup } from 'telegraf'
+import deps from './dependencies'
 import { contextTree, context } from './tools/context'
 import { commands } from './tools/markup'
 import { logger } from './tools/logger'
+
+const { Telegraf, Markup } = deps
 
 class Application {
   constructor() {

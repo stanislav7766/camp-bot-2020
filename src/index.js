@@ -1,8 +1,10 @@
-import dotenv from 'dotenv'
+import deps from './dependencies'
 import { logger } from './tools/logger'
 import application from './app'
 
-dotenv.config({ path: '../.env' })
+const { dotenv, path } = deps
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
 const bootstap = () => {
   try {
