@@ -1,7 +1,7 @@
 import deps from './dependencies'
 import { contextTree, context } from './tools/context'
 import { commands } from './tools/markup'
-import { logger } from './tools/logger'
+import logger from './tools/logger'
 
 const { Telegraf, Markup } = deps
 
@@ -24,12 +24,12 @@ class Application {
     })
 
     this.app.catch(err => {
-      logger.useLogger('error', { msg: err.msg, name: error.name })
+      logger.error(err.stack)
     })
   }
   async start() {
     await this.app.launch()
-    logger.useLogger('info', { msg: `Bot is running`, name: 'App' })
+    logger.log('Bot is running')
   }
 }
 
@@ -40,7 +40,7 @@ const textMessageResponse = async (command, fn, keyboard) => {
     context.emit('changeContext', ctx)
     await fn(ctx.papyrus, keyboard(ctx.keyboard))
   } catch (err) {
-    logger.useLogger('error', { msg: err.msg, name: error.name })
+    logger.error(err.stack)
   }
 }
 const keyboard = (...args) =>

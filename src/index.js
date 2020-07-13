@@ -1,5 +1,5 @@
 import deps from './dependencies'
-import { logger } from './tools/logger'
+import logger from './tools/logger'
 import application from './app'
 
 const { dotenv, path } = deps
@@ -11,7 +11,7 @@ const bootstap = () => {
     application.init()
     application.start()
   } catch (err) {
-    logger.useLogger('error', { msg: err.msg, name: error.name })
+    logger.error(err.stack)
   }
 }
 bootstap()

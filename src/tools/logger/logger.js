@@ -1,35 +1,42 @@
-import winston, { addColors, config, createLogger, transports as _transports } from 'winston'
+import deps from '../../dependencies'
 
-const {
-  format: { combine, label, printf, colorize, timestamp },
-} = winston
-const logTimeStamp = () => new Date(Date.now()).toUTCString()
-const logMessageFormat = printf(info => `[${info.label}]: ${info.message} | ${info.timestamp}`)
+const { util } = deps
 
-addColors({
-  error: 'red',
-  warn: 'yellow',
-  info: 'cyan',
-  verbose: 'blue',
-  debug: 'white',
-  silly: 'white',
-})
-const levels = { ...config.syslog.levels }
+const COLORS = {
+  info: '\x1b[1;37m',
+  debug: '\x1b[1;33m',
+  error: '\x1b[0;31m',
+}
+class Logger {
+  constructor(label) {
+    this.label = label
+  }
 
-export const logger = createLogger({
-  levels,
-  transports: [
-    new _transports.Console({
-      level: 'info',
-      timestamps: true,
-      format: combine(
-        label({ label: 'camp-bot' }),
-        colorize({ all: true }),
-        timestamp({ format: logTimeStamp }),
-        logMessageFormat,
-      ),
-    }),
-  ],
-})
+  write(level = 'info', s) {
+    const date = new Date().toISOString()
+    const color = COLORS[level]
+    const line = `[${this.label}] \t ${s} \t ${date}`
+    console.log(color + line + '\x1b[0m')
+  }
 
-logger.useLogger = (level, { msg, name }) => logger.log(level, `${name} : ${msg}`)
+  log(...args) {
+    const msg = util.format(...args)
+    this.write('info', msg)
+  }
+
+  dir(...args) {
+    const msg = util.inspect(...args)
+    this.write('info', msg)
+  }
+
+  debug(...args) {
+    const msg = util.format(...args)
+    this.write('debug', msg)
+  }
+
+  error(...args) {
+    const msg = util.format(...args).replace(/[\n\r]{2,}/g, '\n')
+    this.write('error', msg.replace(this.regexp, ''))
+  }
+}
+export default new Logger(process.env.BOT_LABEL)
