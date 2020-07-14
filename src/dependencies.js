@@ -7,5 +7,10 @@ deps.Telegraf = Telegraf
 deps.Markup = Markup
 deps.path = path
 deps.util = util
+deps.markupKeyboard = (...args) =>
+  Markup.keyboard(...args)
+    .oneTime()
+    .resize()
+    .extra()
 
 export default Object.freeze(deps)
