@@ -1,0 +1,16 @@
+export const commands = {
+  START: '/start',
+  HELP: '/help',
+  AUTHORIZE: '/authorize',
+  ALL_CAMP_SCORE: '/all_camp_score',
+  LYRICS: '/lyrics',
+  ALL_CAMP_SCHEDULE: '/all_camp_schedule',
+  INFO: '/info',
+  MY_SCHEDULE: 'my_schedule',
+  MY_SCORE: '/my_score',
+  MANAGE_MEETUPS: '/manage_meetups',
+  SEND_MSG_FILE: '/send_msg_file',
+  GET_ALL_SCORES: '/get_all_scores',
+  ADD_POINTS: '/add_points',
+  MANAGE_NOTIFY: '/manage_notify',
+}
