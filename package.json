@@ -10,8 +10,9 @@
   "license": "MIT",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "mongoose": "^5.9.24",
     "telegraf": "^3.38.0"
-    },
+  },
   "devDependencies": {
     "@babel/core": "^7.10.4",
     "@babel/plugin-transform-runtime": "^7.10.4",

@@ -1,4 +1,5 @@
 import AuthorizeService from './authorize'
-
-const authorizeService = AuthorizeService()
+import models from '../models'
+const { userModel } = models
+const authorizeService = AuthorizeService(userModel)
 export default { authorizeService }

@@ -27,7 +27,7 @@ class Application {
   }
   async start() {
     await this.app.launch()
-    logger.log('Bot is running')
+    logger.log('Bot is running ✅')
   }
 }
 
