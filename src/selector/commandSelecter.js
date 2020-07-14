@@ -1,6 +1,6 @@
 import commandHandlers from '../handlers'
 import { commands } from '../tools/markup'
-import { contextTreeUser, contextTreeAdmin, context } from '../tools/context'
+import { contextTreeUser, context } from '../tools/context'
 import logger from '../tools/logger'
 import deps from '../dependencies'
 
@@ -15,26 +15,23 @@ export const commandSelecter = (command, ctx) =>
     [commands.HELP]: () => {
       textMessageResponse(command, ctx.reply, markupKeyboard)
     },
-    [commands.AUTHORIZE]: async () => {
-      const nickname = ctx.from.username
-      try {
-        const res = await authorizeHandler.authorizeUser({ nickname })
-        if (res.result !== 'ok') {
-          ctx.reply('ты недостоин')
-          return
-        }
-        const { status } = res
-        const ctxx =
-          status === 'user'
-            ? contextTreeUser.getCurrentCtx(command)
-            : contextTreeAdmin.getCurrentCtx(command)
-        context.emit('changeContext', { ...ctxx, status })
-        await ctx.reply(ctxx.papyrus, markupKeyboard(ctxx.keyboard))
-      } catch (error) {
-        logger.error(err.stack)
-      }
-    },
+    [commands.AUTHORIZE]: () => authorizeCommand(ctx),
   }[command])
+
+const authorizeCommand = async tg => {
+  const nickname = tg.from.username
+
+  try {
+    const res = await authorizeHandler.authorizeUser({ nickname })
+    if (res.result !== 'ok') {
+      tg.reply(res.papyrus, res.keyboard)
+      return
+    }
+    await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
+  } catch (err) {
+    logger.error(err.stack)
+  }
+}
 
 const textMessageResponse = async (command, fn, keyboard) => {
   try {

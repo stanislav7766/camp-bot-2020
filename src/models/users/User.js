@@ -1,5 +1,5 @@
 import deps from '../../dependencies'
-import { GROUPS, TEAMS } from '../../constants'
+import { GROUPS, TEAMS, STATUS } from '../../constants'
 
 const { mongoose } = deps
 const { Schema, models, model } = mongoose
@@ -9,6 +9,11 @@ const userSchema = new Schema({
     type: String,
     required: true,
     unique: true,
+  },
+  status: {
+    type: String,
+    required: true,
+    enum: STATUS,
   },
   name: {
     type: String,

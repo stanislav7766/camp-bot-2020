@@ -1,7 +1,7 @@
 const authorizeUser = async (body, service) => {
   const { nickname } = body
-  const { result, status } = await service.authorizeUser({ nickname })
-  return { result, status }
+  const { result, papyrus, keyboard } = await service.authorizeUser({ nickname })
+  return { result, papyrus, keyboard }
 }
 
 export default service => ({
