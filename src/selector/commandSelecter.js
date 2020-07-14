@@ -12,6 +12,9 @@ export const commandSelecter = (command, ctx) =>
     [commands.START]: () => {
       textMessageResponse(command, ctx.reply, markupKeyboard)
     },
+    [commands.INFO]: () => {
+      textMessageResponse(command, ctx.reply, markupKeyboard)
+    },
     [commands.HELP]: () => {
       textMessageResponse(command, ctx.reply, markupKeyboard)
     },
