@@ -1,7 +1,8 @@
 import services from '../services'
 import AuthorizeHandler from './authorize'
-
-const { authorizeService } = services
+import UserHandler from './user'
+const { authorizeService, userService } = services
 
 const authorizeHandler = AuthorizeHandler(authorizeService)
-export default { authorizeHandler }
+const userHandler = UserHandler(userService)
+export default { authorizeHandler, userHandler }

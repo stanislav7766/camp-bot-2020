@@ -3,4 +3,5 @@ export const papyrus = {
   getHelpInfo: 'тут будет помощь когда-то )0',
   afterAuthorizeMsgUser: 'конгратс, ты юзер',
   afterAuthorizeMsgAdmin: 'конгратс, ты админ',
+  myScoreMsg: score => `у тебя ${score} баллов`,
 }

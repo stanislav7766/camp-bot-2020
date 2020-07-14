@@ -7,7 +7,7 @@ export const authorizeUser = async (body, model) => {
 
   if (!nickname) return { result: 'failed', papyrus: 'твой ник скрыт, измени настройки', keyboard }
   const user = await model.findOne({ nickname })
-  if (!user) return { result: 'failed', papyrus: 'все таки ты не достоин', keyboard }
+  if (!user) return { result: 'failed', papyrus: 'все таки ты недостоин', keyboard }
   const node =
     user.status === 'user'
       ? contextTreeUser.getCurrentCtx(commands.AUTHORIZE)

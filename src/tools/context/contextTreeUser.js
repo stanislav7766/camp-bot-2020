@@ -25,5 +25,13 @@ ctxTreeUser.insert(
   },
   commands.START,
 )
+ctxTreeUser.insert(
+  {
+    command: commands.MY_SCORE,
+    keyboard: markupUser.afterAuthorize(),
+    papyrus: papyrus.myScoreMsg,
+  },
+  commands.AUTHORIZE,
+)
 
 export const contextTreeUser = ctxTreeUser

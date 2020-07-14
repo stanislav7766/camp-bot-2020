@@ -5,7 +5,7 @@ import logger from '../tools/logger'
 import deps from '../dependencies'
 
 const { markupKeyboard } = deps
-const { authorizeHandler } = commandHandlers
+const { authorizeHandler, userHandler } = commandHandlers
 
 export const commandSelecter = (command, ctx) =>
   ({
@@ -16,6 +16,7 @@ export const commandSelecter = (command, ctx) =>
       textMessageResponse(command, ctx.reply, markupKeyboard)
     },
     [commands.AUTHORIZE]: () => authorizeCommand(ctx),
+    [commands.MY_SCORE]: () => myScoreCommand(ctx),
   }[command])
 
 const authorizeCommand = async tg => {
@@ -24,7 +25,22 @@ const authorizeCommand = async tg => {
   try {
     const res = await authorizeHandler.authorizeUser({ nickname })
     if (res.result !== 'ok') {
-      tg.reply(res.papyrus, res.keyboard)
+      tg.reply(res.papyrus, markupKeyboard(res.keyboard))
+      return
+    }
+    await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
+  } catch (err) {
+    logger.error(err.stack)
+  }
+}
+
+const myScoreCommand = async tg => {
+  const nickname = tg.from.username
+
+  try {
+    const res = await userHandler.getMyScore({ nickname })
+    if (res.result !== 'ok') {
+      tg.reply(res.papyrus, markupKeyboard(res.keyboard))
       return
     }
     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
