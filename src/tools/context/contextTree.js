@@ -1,27 +1,30 @@
-import { ctxTree } from './context'
-import { commands, markup } from '../markup'
-import { papyrus } from '../papyrus'
-
-ctxTree.insert({
-  command: commands.START,
-  keyboard: markup.initialKeyboard(),
-  papyrus: papyrus.getInitialGreeting,
-})
-ctxTree.insert(
-  {
-    command: commands.HELP,
-    keyboard: markup.initialKeyboard(),
-    papyrus: papyrus.getHelpInfo,
-  },
-  commands.START,
-)
-ctxTree.insert(
-  {
-    command: commands.AUTHORIZE,
-    keyboard: markup.afterAuthorize(),
-    papyrus: papyrus.afterAuthorizeMsg,
-  },
-  commands.START,
-)
-
-export const contextTree = ctxTree
+function ContextTree() {
+  this.nodes = []
+}
+function Node(data, parent) {
+  this.data = data
+  this.children = []
+  this.parent = parent
+  parent && parent.children.push(this)
+}
+ContextTree.prototype.insert = function (data, parentName) {
+  let foundParent = {}
+  if (parentName) {
+    foundParent = this.nodes.find(node => (node.data.command === parentName ? node : null))
+    this.nodes.push(
+      new Node(data, foundParent !== undefined && this.nodes.length !== 0 ? foundParent : null),
+    )
+  } else this.nodes.push(new Node(data, null))
+}
+ContextTree.prototype.searchContext = function (command) {
+  return this.nodes.find(node => (node.data.command === command ? node : null))
+}
+ContextTree.prototype.getCurrentCtx = function (command) {
+  const node = this.searchContext(command)
+  return node ? node.data : null
+}
+ContextTree.prototype.getParentOfCurContext = function (command) {
+  const node = this.searchContext(command)
+  return node && node.parent ? node.parent.data : null
+}
+export default ContextTree

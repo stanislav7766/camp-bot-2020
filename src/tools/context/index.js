@@ -1,2 +1,3 @@
-export { contextTree } from './contextTree'
+export { contextTreeUser } from './contextTreeUser'
+export { contextTreeAdmin } from './contextTreeAdmin'
 export { context } from './context'
