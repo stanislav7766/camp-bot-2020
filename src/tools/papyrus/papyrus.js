@@ -5,4 +5,9 @@ export const papyrus = {
   afterAuthorizeMsgUser: 'конгратс, ты юзер',
   afterAuthorizeMsgAdmin: 'конгратс, ты админ',
   myScoreMsg: score => `у тебя ${score} баллов`,
+  getTodayMsg: 'Вот расписание на сегодня',
+  getTomorrowMsg: 'Вот расписание на завтра',
+  getWholeMsg: 'Вот расписание на все дни',
+  getMyScheduleMsg: 'На когда нужно расписание?',
+  getAllScheduleMsg: 'На какую группу нужно расписание?',
 }

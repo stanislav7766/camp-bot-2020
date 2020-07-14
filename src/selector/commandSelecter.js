@@ -18,6 +18,30 @@ export const commandSelecter = (command, ctx) =>
     [commands.HELP]: () => {
       textMessageResponse(command, ctx.reply, markupKeyboard)
     },
+    [commands.TODAY]: () => {
+      textMessageResponse(command, ctx.reply, markupKeyboard)
+    },
+    [commands.TOMORROW]: () => {
+      textMessageResponse(command, ctx.reply, markupKeyboard)
+    },
+    [commands.WHOLE]: () => {
+      textMessageResponse(command, ctx.reply, markupKeyboard)
+    },
+    [commands.MY_SCHEDULE]: () => {
+      textMessageResponse(command, ctx.reply, markupKeyboard)
+    },
+    [commands.ALL_CAMP_SCHEDULE]: () => {
+      textMessageResponse(command, ctx.reply, markupKeyboard)
+    },
+    [commands.GROUP1]: () => {
+      textMessageResponse(command, ctx.reply, markupKeyboard)
+    },
+    [commands.GROUP2]: () => {
+      textMessageResponse(command, ctx.reply, markupKeyboard)
+    },
+    [commands.GROUP3]: () => {
+      textMessageResponse(command, ctx.reply, markupKeyboard)
+    },
     [commands.AUTHORIZE]: () => authorizeCommand(ctx),
     [commands.MY_SCORE]: () => myScoreCommand(ctx),
   }[command])

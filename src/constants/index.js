@@ -1,3 +1,3 @@
-export const GROUPS = ['1', '2', '3', '4']
-export const TEAMS = ['1', '2', '3', '4']
+export const GROUPS = ['group1', 'group2', 'group3']
+export const TEAMS = ['orange', 'pink', 'purple', 'navy', 'white']
 export const STATUS = ['user', 'admin']

@@ -35,11 +35,75 @@ ctxTreeUser.insert(
 )
 ctxTreeUser.insert(
   {
+    command: commands.MY_SCHEDULE,
+    keyboard: markupUser.afterMySchedule(),
+    papyrus: papyrus.getMyScheduleMsg,
+  },
+  commands.AUTHORIZE,
+)
+ctxTreeUser.insert(
+  {
     command: commands.INFO,
     keyboard: markupUser.afterAuthorize(),
     papyrus: papyrus.getInfoMsg,
   },
   commands.AUTHORIZE,
+)
+ctxTreeUser.insert(
+  {
+    command: commands.TODAY,
+    keyboard: markupUser.afterAuthorize(),
+    papyrus: papyrus.getTodayMsg,
+  },
+  commands.MY_SCHEDULE,
+)
+ctxTreeUser.insert(
+  {
+    command: commands.TOMORROW,
+    keyboard: markupUser.afterAuthorize(),
+    papyrus: papyrus.getTomorrowMsg,
+  },
+  commands.MY_SCHEDULE,
+)
+ctxTreeUser.insert(
+  {
+    command: commands.WHOLE,
+    keyboard: markupUser.afterAuthorize(),
+    papyrus: papyrus.getWholeMsg,
+  },
+  commands.MY_SCHEDULE,
+)
+ctxTreeUser.insert(
+  {
+    command: commands.ALL_CAMP_SCHEDULE,
+    keyboard: markupUser.afterAllSchedule(),
+    papyrus: papyrus.getAllScheduleMsg,
+  },
+  commands.AUTHORIZE,
+)
+ctxTreeUser.insert(
+  {
+    command: commands.GROUP1,
+    keyboard: markupUser.afterMySchedule(),
+    papyrus: papyrus.getMyScheduleMsg,
+  },
+  commands.ALL_CAMP_SCHEDULE,
+)
+ctxTreeUser.insert(
+  {
+    command: commands.GROUP2,
+    keyboard: markupUser.afterMySchedule(),
+    papyrus: papyrus.getMyScheduleMsg,
+  },
+  commands.ALL_CAMP_SCHEDULE,
+)
+ctxTreeUser.insert(
+  {
+    command: commands.GROUP3,
+    keyboard: markupUser.afterMySchedule(),
+    papyrus: papyrus.getMyScheduleMsg,
+  },
+  commands.ALL_CAMP_SCHEDULE,
 )
 
 export const contextTreeUser = ctxTreeUser
