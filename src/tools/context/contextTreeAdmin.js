@@ -25,5 +25,21 @@ ctxTreeAdmin.insert(
   },
   commands.START,
 )
+ctxTreeAdmin.insert(
+  {
+    command: commands.ALL_CAMP_SCORE,
+    keyboard: markupAdmin.afterAuthorize(),
+    papyrus: papyrus.getAllScoresMsg,
+  },
+  commands.AUTHORIZE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.GET_ALL_SCORES,
+    keyboard: markupAdmin.afterAuthorize(),
+    papyrus: papyrus.getAllScoresMsgPdf,
+  },
+  commands.AUTHORIZE,
+)
 
 export const contextTreeAdmin = ctxTreeAdmin

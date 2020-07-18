@@ -105,5 +105,13 @@ ctxTreeUser.insert(
   },
   commands.ALL_CAMP_SCHEDULE,
 )
+ctxTreeUser.insert(
+  {
+    command: commands.ALL_CAMP_SCORE,
+    keyboard: markupUser.afterAuthorize(),
+    papyrus: papyrus.getAllScoresMsg,
+  },
+  commands.AUTHORIZE,
+)
 
 export const contextTreeUser = ctxTreeUser

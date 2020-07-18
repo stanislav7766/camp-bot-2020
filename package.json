@@ -11,6 +11,8 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "mongoose": "^5.9.24",
+    "pdf-creator-node": "^1.4.1",
+    "pdfmake": "^0.1.66",
     "telegraf": "^3.38.0"
   },
   "devDependencies": {

@@ -32,7 +32,7 @@ const userSchema = new Schema({
   },
   group: {
     type: String,
-    required: true,
+    required: false,
     enum: GROUPS,
   },
   team: {

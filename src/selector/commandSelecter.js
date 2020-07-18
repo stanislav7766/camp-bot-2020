@@ -44,6 +44,8 @@ export const commandSelecter = (command, ctx) =>
     },
     [commands.AUTHORIZE]: () => authorizeCommand(ctx),
     [commands.MY_SCORE]: () => myScoreCommand(ctx),
+    [commands.ALL_CAMP_SCORE]: () => allCampScoreCommand(ctx),
+    [commands.GET_ALL_SCORES]: () => getAllScoresCommand(ctx),
   }[command])
 
 const authorizeCommand = async tg => {
@@ -76,6 +78,36 @@ const myScoreCommand = async tg => {
   }
 }
 
+const allCampScoreCommand = async tg => {
+  try {
+    const res = await userHandler.getAllCampScore()
+    if (res.result !== 'ok') {
+      tg.reply(res.papyrus, markupKeyboard(res.keyboard))
+      return
+    }
+    await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
+  } catch (err) {
+    logger.error(err.stack)
+  }
+}
+const getAllScoresCommand = async tg => {
+  const { id } = tg.from
+  try {
+    const res = await userHandler.getAllScores()
+    if (res.result !== 'ok') {
+      tg.reply(res.papyrus, markupKeyboard(res.keyboard))
+      return
+    }
+    await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
+    console.log(res.data)
+    await tg.replyWithDocument({
+      source: res.data,
+      filename: `${commands.GET_ALL_SCORES}.pdf`,
+    })
+  } catch (err) {
+    logger.error(err.stack)
+  }
+}
 const textMessageResponse = async (command, fn, keyboard) => {
   try {
     const ctx = contextTreeUser.getCurrentCtx(command)
