@@ -1,2 +1,3 @@
 import userModel from './users/User'
-export default { userModel }
+import meetupModel from './meetups/Meetup'
+export default { userModel, meetupModel }

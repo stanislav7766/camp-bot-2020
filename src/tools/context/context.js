@@ -5,6 +5,8 @@ function Context() {
     command: '',
     keyboard: '',
     papyrus: '',
+    typedPoints: '',
+    meetup: {},
   }
 }
 

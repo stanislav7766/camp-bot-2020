@@ -12,4 +12,18 @@ export const markupAdmin = {
     [commands.ADD_POINTS],
     [commands.MANAGE_NOTIFY],
   ],
+  afterAddPoints: () => [[commands.GROUP1], [commands.GROUP2], [commands.GROUP3]],
+  afterManageMeetups: () => [
+    [commands.ADD_MEETUP],
+    [commands.EDIT_MEETUP],
+    [commands.DELETE_MEETUP],
+  ],
+  chooseMeetupsDay: () => [
+    [commands.DAY1],
+    [commands.DAY2],
+    [commands.DAY3],
+    [commands.DAY4],
+    [commands.DAY5],
+    [commands.DAY6],
+  ],
 }

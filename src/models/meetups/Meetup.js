@@ -10,7 +10,7 @@ const meetupSchema = new Schema({
     required: true,
     unique: true,
   },
-  date: {
+  day: {
     type: String,
     required: true,
   },
@@ -21,12 +21,11 @@ const meetupSchema = new Schema({
   audience: {
     type: String,
     required: true,
-    enum: [...GROUPS, TEAMS, ALL_CAMP_AUDIENCE],
+    enum: [...GROUPS, ...TEAMS, ALL_CAMP_AUDIENCE],
   },
   facilitator: [
     {
-      type: Schema.Types.ObjectId,
-      ref: 'users',
+      type: String,
       required: true,
     },
   ],

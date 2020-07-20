@@ -40,5 +40,9 @@ const userSchema = new Schema({
     required: true,
     enum: TEAMS,
   },
+  numberList: {
+    type: Number,
+    required: false,
+  },
 })
 export default models.users || model('users', userSchema)

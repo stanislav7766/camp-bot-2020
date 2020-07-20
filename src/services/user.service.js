@@ -1,4 +1,5 @@
 import { context, contextTreeAdmin, contextTreeUser } from '../tools/context'
+import { papyrus } from '../tools/papyrus'
 import { commands } from '../tools/markup'
 import { TEAMS, STATUS } from '../constants'
 import { textToPdf } from '../tools/pdf'
@@ -51,8 +52,61 @@ const getAllScores = async (body, model) => {
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard, data }
 }
 
+const getGroupList = async (body, model) => {
+  const { group } = body
+  const users = await model.find({ group, status: STATUS[0] })
+  //todo res failed
+  //todo sort by numberList
+  const textList = users.reduce(
+    (accum, { name, nickname }, ind) => `${accum}${ind + 1}.  ${name}   ${nickname}\n `,
+    '',
+  )
+  const node = contextTreeAdmin.getCurrentCtx(commands.ADD_POINTS)
+  context.emit('changeContext', { ...node })
+  return { result: 'ok', papyrus: papyrus.typeNumberInList(textList), keyboard: [] }
+}
+const checkTypedPoints = async (body, model) => {
+  const { typedPoints } = body
+
+  // const [numberList,countPoints] =typedPoints.split('-')
+
+  const node = contextTreeAdmin.getCurrentCtx(commands.ADD_POINTS_TYPED_NUMBER)
+  context.emit('changeContext', { ...node, typedPoints })
+  return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
+}
+
+const confirmTypedPoints = async (body, model) => {
+  const { answer } = body
+  const { typedPoints } = context.getContext()
+  let additional = ``
+  if (answer === 'yes') {
+    const [numberList, countPoints] = typedPoints.split('-')
+    const user = await model.findOne({ numberList })
+    user.score += Number(countPoints)
+    await model.findOneAndUpdate({ numberList }, { $set: user }, { new: true })
+    additional = `You’ve gave the following points: ${countPoints}\n`
+  }
+
+  const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
+  context.emit('changeContext', { ...node, typedPoints: '' })
+  return { result: 'ok', papyrus: additional + node.papyrus, keyboard: node.keyboard }
+}
+
+const addMeetup = async (body, model) => {
+  const { dayCmd } = body
+  const { meetup } = context.getContext()
+  meetup.day = dayCmd.substring(1)
+  const node = contextTreeAdmin.getCurrentCtx(commands.ADD_MEETUP_TITLE)
+  context.emit('changeContext', { ...node, meetup })
+  return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
+}
+
 export default model => ({
   getMyScore: body => getMyScore(body, model),
   getAllCampScore: () => getAllCampScore(null, model),
   getAllScores: () => getAllScores(null, model),
+  getGroupList: body => getGroupList(body, model),
+  checkTypedPoints: body => checkTypedPoints(body, model),
+  confirmTypedPoints: body => confirmTypedPoints(body, model),
+  addMeetup: body => addMeetup(body, model),
 })

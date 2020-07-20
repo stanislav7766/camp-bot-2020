@@ -1,6 +1,6 @@
 import deps from './dependencies'
 import { commands } from './tools/markup'
-import { commandSelecter } from './selector/commandSelecter'
+import { commandSelecter, subcommandSelector, isSubcommand } from './selector/commandSelecter'
 import logger from './tools/logger'
 
 const { Telegraf } = deps
@@ -15,9 +15,10 @@ class Application {
     })
     this.app.on('message', async ctx => {
       const { text } = ctx.message
-
       Object.values(commands).includes(text)
         ? commandSelecter(text, ctx)()
+        : isSubcommand(text)
+        ? subcommandSelector(text, ctx)
         : ctx.reply('чет ты не команду ввел-_-')
     })
 
