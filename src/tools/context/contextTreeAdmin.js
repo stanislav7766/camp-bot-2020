@@ -236,5 +236,60 @@ ctxTreeAdmin.insert(
   },
   commands.SEND_MSG_FILE,
 )
-
+ctxTreeAdmin.insert(
+  {
+    command: commands.TODAY,
+    keyboard: markupAdmin.afterAuthorize(),
+    papyrus: papyrus.getTodayMsg,
+  },
+  commands.MY_SCHEDULE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.TOMORROW,
+    keyboard: markupAdmin.afterAuthorize(),
+    papyrus: papyrus.getTomorrowMsg,
+  },
+  commands.MY_SCHEDULE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.WHOLE,
+    keyboard: markupAdmin.afterAuthorize(),
+    papyrus: papyrus.getWholeMsg,
+  },
+  commands.MY_SCHEDULE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.ALL_CAMP_SCHEDULE,
+    keyboard: markupAdmin.afterAllSchedule(),
+    papyrus: papyrus.getAllScheduleMsg,
+  },
+  commands.AUTHORIZE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.GROUP1,
+    keyboard: markupAdmin.afterMySchedule(),
+    papyrus: papyrus.getMyScheduleMsg,
+  },
+  commands.ALL_CAMP_SCHEDULE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.GROUP2,
+    keyboard: markupAdmin.afterMySchedule(),
+    papyrus: papyrus.getMyScheduleMsg,
+  },
+  commands.ALL_CAMP_SCHEDULE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.GROUP3,
+    keyboard: markupAdmin.afterMySchedule(),
+    papyrus: papyrus.getMyScheduleMsg,
+  },
+  commands.ALL_CAMP_SCHEDULE,
+)
 export const contextTreeAdmin = ctxTreeAdmin

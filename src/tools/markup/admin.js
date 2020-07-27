@@ -44,4 +44,6 @@ export const markupAdmin = {
     [commands.WHITE],
     [commands.NAVY],
   ],
+  afterMySchedule: () => [[commands.TODAY], [commands.TOMORROW], [commands.WHOLE]],
+  afterAllSchedule: () => [[commands.GROUP1], [commands.GROUP2], [commands.GROUP3]],
 }
