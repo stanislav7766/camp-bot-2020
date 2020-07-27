@@ -5,7 +5,7 @@
   "author": "stanislav7766",
   "scripts": {
     "live": "nodemon",
-    "build": "webpack --mode development"
+    "build": "webpack --mode production"
   },
   "license": "MIT",
   "dependencies": {
