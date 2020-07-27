@@ -1,8 +1,8 @@
 import { context, contextTreeAdmin, contextTreeUser } from '../tools/context'
-import { papyrus } from '../tools/papyrus'
-import { commands } from '../tools/markup'
+import { commands, subCommands } from '../tools/markup'
 import { TEAMS, STATUS } from '../constants'
 import { textToPdf } from '../tools/pdf'
+import { isNumberPoints, isYesNo } from '../tools/validation'
 // todo move contex to db
 const getEmptyTeamScores = teams => teams.reduce((accum, team) => ({ ...accum, [team]: 0 }), {})
 
@@ -61,16 +61,18 @@ const getGroupList = async (body, model) => {
     (accum, { name, nickname }, ind) => `${accum}${ind + 1}.  ${name}   ${nickname}\n `,
     '',
   )
-  const node = contextTreeAdmin.getCurrentCtx(commands.ADD_POINTS)
+  const node = contextTreeAdmin.getCurrentCtx(subCommands.ADD_POINTS_CHOOSE_ONE)
   context.emit('changeContext', { ...node })
-  return { result: 'ok', papyrus: papyrus.typeNumberInList(textList), keyboard: [] }
+  return { result: 'ok', papyrus: node.papyrus(textList), keyboard: node.keyboard }
 }
 const checkTypedPoints = async (body, model) => {
   const { typedPoints } = body
-
-  // const [numberList,countPoints] =typedPoints.split('-')
-
-  const node = contextTreeAdmin.getCurrentCtx(commands.ADD_POINTS_TYPED_NUMBER)
+  if (!isNumberPoints(typedPoints)) {
+    const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
+    context.emit('changeContext', { ...node })
+    return { result: 'failed', papyrus: papyrus.incorrectTypedPoints, keyboard: node.keyboard }
+  }
+  const node = contextTreeAdmin.getCurrentCtx(subCommands.ADD_POINTS_TYPED_NUMBER)
   context.emit('changeContext', { ...node, typedPoints })
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
 }
@@ -91,14 +93,81 @@ const confirmTypedPoints = async (body, model) => {
   context.emit('changeContext', { ...node, typedPoints: '' })
   return { result: 'ok', papyrus: additional + node.papyrus, keyboard: node.keyboard }
 }
-
-const addMeetup = async (body, model) => {
-  const { dayCmd } = body
-  const { meetup } = context.getContext()
-  meetup.day = dayCmd.substring(1)
-  const node = contextTreeAdmin.getCurrentCtx(commands.ADD_MEETUP_TITLE)
-  context.emit('changeContext', { ...node, meetup })
+const sendMsgFile = async (body, model) => {
+  const { receiver } = body
+  const { msgFile } = context.getContext()
+  msgFile.receiverMsg = receiver
+  const node = contextTreeAdmin.getCurrentCtx(subCommands.SEND_MSG_FILE_TYPE_MSG)
+  context.emit('changeContext', { ...node, msgFile })
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
+}
+const typedMsg = async (body, model) => {
+  const { msg } = body
+  const { msgFile } = context.getContext()
+  msgFile.msg = msg
+  const node = contextTreeAdmin.getCurrentCtx(subCommands.SEND_MSG_FILE_ASK_FILE)
+  context.emit('changeContext', { ...node, msgFile })
+  return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
+}
+const loadedFile = async (body, model) => {
+  const { file } = body
+  const { msgFile } = context.getContext()
+  msgFile.file = file
+  const node = contextTreeAdmin.getCurrentCtx(subCommands.SEND_MSG_FILE_CONFIRM_SENDING)
+  context.emit('changeContext', { ...node, msgFile })
+  return {
+    result: 'ok',
+    papyrus: node.papyrus({
+      msg: msgFile.msg,
+      filename: msgFile.file && msgFile.file.file_name,
+      receiver: msgFile.receiverMsg,
+    }),
+    keyboard: node.keyboard,
+  }
+}
+
+const typedAskFile = async (body, model) => {
+  const { answer } = body
+  const { msgFile } = context.getContext()
+  if (!isYesNo(answer)) return incorrectYesNo()
+  const node = contextTreeAdmin.getCurrentCtx(
+    answer === 'yes'
+      ? subCommands.SEND_MSG_FILE_LOAD_FILE
+      : subCommands.SEND_MSG_FILE_CONFIRM_SENDING,
+  )
+
+  context.emit('changeContext', { ...node })
+  return {
+    result: 'ok',
+    papyrus:
+      answer === 'yes'
+        ? node.papyrus
+        : node.papyrus({ msg: msgFile.msg, receiver: msgFile.receiverMsg }),
+    keyboard: node.keyboard,
+  }
+}
+const confirmMsgFileSend = async (body, model) => {
+  const { answer } = body
+  const { msgFile } = context.getContext()
+  const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
+  context.emit('changeContext', { ...node })
+  if (answer === 'yes') {
+    return {
+      result: 'ok',
+      papyrus: node.papyrus,
+      keyboard: node.keyboard,
+      msg: msgFile.msg,
+      file: msgFile.file,
+    }
+  }
+
+  return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
+}
+
+const incorrectYesNo = () => {
+  const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
+  context.emit('changeContext', { ...node })
+  return { result: 'failed', papyrus: papyrus.incorrectYesNo, keyboard: node.keyboard }
 }
 
 export default model => ({
@@ -108,5 +177,9 @@ export default model => ({
   getGroupList: body => getGroupList(body, model),
   checkTypedPoints: body => checkTypedPoints(body, model),
   confirmTypedPoints: body => confirmTypedPoints(body, model),
-  addMeetup: body => addMeetup(body, model),
+  sendMsgFile: body => sendMsgFile(body, model),
+  typedAskFile: body => typedAskFile(body, model),
+  loadedFile: body => loadedFile(body, model),
+  typedMsg: body => typedMsg(body, model),
+  confirmMsgFileSend: body => confirmMsgFileSend(body, model),
 })

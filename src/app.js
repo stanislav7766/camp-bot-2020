@@ -1,6 +1,6 @@
 import deps from './dependencies'
-import { commands } from './tools/markup'
-import { commandSelecter, subcommandSelector, isSubcommand } from './selector/commandSelecter'
+import { commands, subCommands } from './tools/markup'
+import { commandSelector, subcommandSelector, isCommand, isSubCommand } from './selector/'
 import logger from './tools/logger'
 
 const { Telegraf } = deps
@@ -11,15 +11,18 @@ class Application {
   }
   init() {
     this.app.start(ctx => {
-      commandSelecter(commands.START, ctx)()
+      commandSelector(commands.START, ctx)()
     })
     this.app.on('message', async ctx => {
-      const { text } = ctx.message
-      Object.values(commands).includes(text)
-        ? commandSelecter(text, ctx)()
-        : isSubcommand(text)
-        ? subcommandSelector(text, ctx)
-        : ctx.reply('чет ты не команду ввел-_-')
+      const { text, document } = ctx.message
+      if (!text && document !== undefined)
+        subcommandSelector(subCommands.SEND_MSG_FILE_LOAD_FILE, ctx, document)
+      else
+        isCommand(text)
+          ? commandSelector(text, ctx)
+          : isSubCommand()
+          ? subcommandSelector(text, ctx)
+          : ctx.reply('чет ты не команду ввел-_-')
     })
 
     this.app.catch(err => {

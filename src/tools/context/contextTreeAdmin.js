@@ -1,5 +1,5 @@
 import ContextTree from './contextTree'
-import { commands, markupAdmin } from '../markup'
+import { commands, subCommands, markupAdmin } from '../markup'
 import { papyrus } from '../papyrus'
 
 const ctxTreeAdmin = new ContextTree()
@@ -35,6 +35,14 @@ ctxTreeAdmin.insert(
 )
 ctxTreeAdmin.insert(
   {
+    command: commands.SEND_MSG_FILE,
+    keyboard: markupAdmin.afterSendMsgFile(),
+    papyrus: papyrus.selectAudience,
+  },
+  commands.AUTHORIZE,
+)
+ctxTreeAdmin.insert(
+  {
     command: commands.GET_ALL_SCORES,
     keyboard: markupAdmin.afterAuthorize(),
     papyrus: papyrus.getAllScoresMsgPdf,
@@ -51,7 +59,16 @@ ctxTreeAdmin.insert(
 )
 ctxTreeAdmin.insert(
   {
-    command: commands.ADD_POINTS_TYPED_NUMBER,
+    command: subCommands.ADD_POINTS_CHOOSE_ONE,
+    keyboard: [],
+    papyrus: papyrus.typeNumberInList,
+  },
+  commands.ADD_POINTS,
+)
+
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.ADD_POINTS_TYPED_NUMBER,
     keyboard: [],
     papyrus: papyrus.checkTypedNumber,
   },
@@ -92,7 +109,7 @@ ctxTreeAdmin.insert(
 )
 ctxTreeAdmin.insert(
   {
-    command: commands.ADD_MEETUP_TITLE,
+    command: subCommands.ADD_MEETUP_TITLE,
     keyboard: [],
     papyrus: papyrus.getAddMeetupTitleMsg,
   },
@@ -100,7 +117,7 @@ ctxTreeAdmin.insert(
 )
 ctxTreeAdmin.insert(
   {
-    command: commands.ADD_MEETUP_TIME,
+    command: subCommands.ADD_MEETUP_TIME,
     keyboard: [],
     papyrus: papyrus.getAddMeetupTimeMsg,
   },
@@ -108,7 +125,7 @@ ctxTreeAdmin.insert(
 )
 ctxTreeAdmin.insert(
   {
-    command: commands.ADD_MEETUP_FACILITATOR,
+    command: subCommands.ADD_MEETUP_FACILITATOR,
     keyboard: [],
     papyrus: papyrus.getAddMeetupFacilitatorMsg,
   },
@@ -116,7 +133,7 @@ ctxTreeAdmin.insert(
 )
 ctxTreeAdmin.insert(
   {
-    command: commands.ADD_MEETUP_AUDIENCE,
+    command: subCommands.ADD_MEETUP_AUDIENCE,
     keyboard: [],
     papyrus: papyrus.getAddMeetupAudienceMsg,
   },
@@ -124,7 +141,7 @@ ctxTreeAdmin.insert(
 )
 ctxTreeAdmin.insert(
   {
-    command: commands.ADD_MEETUP_LINK,
+    command: subCommands.ADD_MEETUP_LINK,
     keyboard: [],
     papyrus: papyrus.getAddMeetupLinkMsg,
   },
@@ -132,10 +149,92 @@ ctxTreeAdmin.insert(
 )
 ctxTreeAdmin.insert(
   {
-    command: commands.ADD_MEETUP_CONFIRM,
+    command: subCommands.ADD_MEETUP_CONFIRM,
     keyboard: [],
     papyrus: papyrus.getAddMeetupConfirmMsg,
   },
   commands.ADD_MEETUP,
 )
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.DELETE_MEETUP_CHOOSE_ONE,
+    keyboard: [],
+    papyrus: papyrus.typeMeetupInList,
+  },
+  commands.DELETE_MEETUP,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.EDIT_MEETUP_CHOOSE_ONE,
+    keyboard: [],
+    papyrus: papyrus.typeMeetupInList,
+  },
+  commands.EDIT_MEETUP,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.EDIT_MEETUP_CHOOSE_PROP,
+    keyboard: markupAdmin.editMeetupProp(),
+    papyrus: papyrus.selectEditInMeetup,
+  },
+  commands.EDIT_MEETUP,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.DELETE_MEETUP_CONFIRM,
+    keyboard: [],
+    papyrus: papyrus.getDeleteMeetupConfirmMsg,
+  },
+  commands.DELETE_MEETUP,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.EDIT_MEETUP_TYPED_PROP,
+    keyboard: [],
+    papyrus: papyrus.typeNewMeetupProp,
+  },
+  commands.EDIT_MEETUP,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.EDIT_MEETUP_CONFIRM,
+    keyboard: [],
+    papyrus: papyrus.getEditMeetupConfirmMsg,
+  },
+  commands.EDIT_MEETUP,
+)
+
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.SEND_MSG_FILE_TYPE_MSG,
+    keyboard: [],
+    papyrus: papyrus.typeMsgForSending,
+  },
+  commands.SEND_MSG_FILE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.SEND_MSG_FILE_ASK_FILE,
+    keyboard: [],
+    papyrus: papyrus.askFileForSendingMsg,
+  },
+  commands.SEND_MSG_FILE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.SEND_MSG_FILE_LOAD_FILE,
+    keyboard: [],
+    papyrus: papyrus.waitLoadFile,
+  },
+  commands.SEND_MSG_FILE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.SEND_MSG_FILE_CONFIRM_SENDING,
+    keyboard: [],
+    papyrus: papyrus.sendMsgFileConfirm,
+  },
+  commands.SEND_MSG_FILE,
+)
+
 export const contextTreeAdmin = ctxTreeAdmin

@@ -26,4 +26,22 @@ export const markupAdmin = {
     [commands.DAY5],
     [commands.DAY6],
   ],
+  editMeetupProp: () => [
+    [commands.EDIT_MEETUP_DAY],
+    [commands.EDIT_MEETUP_TITLE],
+    [commands.EDIT_MEETUP_TIME],
+    [commands.EDIT_MEETUP_FACILITATOR],
+    [commands.EDIT_MEETUP_LINK],
+    [commands.EDIT_MEETUP_AUDIENCE],
+  ],
+  afterSendMsgFile: () => [
+    [commands.GROUP1],
+    [commands.GROUP2],
+    [commands.GROUP3],
+    [commands.ORANGE],
+    [commands.PINK],
+    [commands.PURPLE],
+    [commands.WHITE],
+    [commands.NAVY],
+  ],
 }

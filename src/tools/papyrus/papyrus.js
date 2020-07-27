@@ -9,8 +9,8 @@ export const papyrus = {
   Your Team Leaders:
   … (info from base)
   `,
-  afterAuthorizeMsgUser: 'конгратс, ты юзер',
-  afterAuthorizeMsgAdmin: 'конгратс, ты админ',
+  afterAuthorizeMsgUser: 'Choose something',
+  afterAuthorizeMsgAdmin: 'Choose something',
   myScoreMsg: score =>
     `Hey! Your current score: ${score}. Be active during lessons to reach more ;)`,
   getTodayMsg: 'Вот расписание на сегодня',
@@ -23,7 +23,8 @@ export const papyrus = {
   getNotAuthorizedMsg:
     'Ooops, can’t find you in the list of participants! Make sure you use the same Telegram nickname as you’ve sent to organizers. If you think something wrong – fell free to contact @astarianka (aka Staff Anka).',
   getChooseGroupMsg: 'Choose the needed group',
-  typeNumberInList: list => `${list} \n Type: 'camper's number]-]points count'\nLike 1-10`,
+  typeNumberInList: list => `${list} \n Type [camper's number]-[points count].\For instance 1-10`,
+  incorrectTypedPoints: `Incorrect input. Type [camper's number]-[points count].\For instance 1-10`,
   checkTypedNumber: `Are you sure? Type yes/no`,
   getManageMeetups: 'Choose the needed operation',
   getMeetupsDayMsg: 'Choose the needed day',
@@ -34,4 +35,24 @@ export const papyrus = {
   getAddMeetupLinkMsg: `Type meetup's link.`,
   getAddMeetupConfirmMsg: text =>
     `Current version of your meetup:\n ${text} \n Are you sure you want to add it? Type yes/no`,
+  getDeleteMeetupConfirmMsg: `Are you sure you want to delete it? Type yes/no`,
+  typeMeetupInList: list => `${list} \n Type [meetup's title].\nFor instance hello`,
+  IncorrectMeetupTitle: 'This meetup does not exist',
+  incorrectMeetupTime: `Incorrect time format. Format hh:mm. Type for instance 08:00`,
+  incorrectMeetupAudience: `Incorrect audience choice. Type all/group1-3/team's name(orange)`,
+  incorrectMeetupDay: `Incorrect day choice. Type day1-6`,
+  incorrectMeetupLink: 'Incorrect link url',
+  selectEditInMeetup: 'Select which part of meetup you want to edit',
+  typeNewMeetupProp: prop => `Type new <${prop}> for selected meetup`,
+  getEditMeetupConfirmMsg: ({ prop, from, to }) =>
+    `Are you sure you want to edit <${prop}> from '${from}' to '${to}'? Type yes/no`,
+  typeMsgForSending: 'Type new message for choosed audience',
+  askFileForSendingMsg: 'Are you going to load file? Type yes/no',
+  selectAudience: 'Select audience',
+  incorrectYesNo: 'Incorrect input',
+  waitLoadFile: 'Send me needed file',
+  sendMsgFileConfirm: ({ msg, filename, receiver }) =>
+    `Are you sure you want to send msg:\n'${msg}'${
+      filename ? '\nWith file ' + "'" + filename + "'" : ''
+    } for ${receiver}? Type yes/no`,
 }

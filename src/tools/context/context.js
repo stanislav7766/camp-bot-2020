@@ -5,7 +5,13 @@ function Context() {
     command: '',
     keyboard: '',
     papyrus: '',
+    msgFile: {
+      receiverMsg: '',
+      msg: '',
+      file: null,
+    },
     typedPoints: '',
+    meetupProp: '',
     meetup: {},
   }
 }
