@@ -34,7 +34,7 @@ class Application {
   }
   async start() {
     await this.app.launch()
-    await this.mapCronJobs()
+    // await this.mapCronJobs()
     logger.log('Bot is running ✅')
   }
 }
