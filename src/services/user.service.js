@@ -88,7 +88,7 @@ const confirmTypedPoints = async (body, model) => {
     const user = await model.findOne({ numberList })
     user.score += Number(countPoints)
     await model.findOneAndUpdate({ numberList }, { $set: user }, { new: true })
-    additional = `You’ve given the following points: ${countPoints}\n`
+    additional = `You’ve given the following  points: ${countPoints}\n`
     chatID = user.chatID
   }
 
