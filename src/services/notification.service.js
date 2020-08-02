@@ -138,6 +138,7 @@ const confirmTypedDeleteNotify = async (body, models) => {
 }
 const confirmTypedEditNotify = async (body, models) => {
   const { answer } = body
+  const { cronJobs } = context.getContext()
   const { notificationModel } = models
   let additional = ``
   const { notify } = context.getContext()
@@ -207,10 +208,17 @@ const startCronJobs = async (body, models) => {
             users.map(async ({ chatID }) => {
               chatID !== null &&
                 chatID !== undefined &&
-                createJob(notifyDate, _id, async () => {
-                  await fetch(getTgUrl({ id: chatID, msg: encodeURIComponent(msg) }))
-                  await notificationModel.findOneAndRemove({ _id })
-                })
+                createJob(
+                  notifyDate,
+                  _id,
+                  async () => {
+                    await fetch(getTgUrl({ id: chatID, msg: encodeURIComponent(msg) }))
+                    await notificationModel.findOneAndRemove({ _id })
+                  },
+                  null,
+                  false,
+                  'Europe/Kiev',
+                )
             }),
           ))
       }),
