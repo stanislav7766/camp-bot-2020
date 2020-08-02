@@ -9,3 +9,6 @@ export const isNumberPoints = text => !!/^[0-9]?[0-9]-[0-9]?[0-9]$/.test(text)
 
 export const isDay = text => DAYS.includes(text)
 export const isYesNo = text => text === 'yes' || text === 'no'
+export const isNotEmptyArr = arr => Array.isArray(arr) && arr.length > 0
+export const isTeam = text => TEAMS.includes(text)
+export const isGroup = text => GROUPS.includes(text)

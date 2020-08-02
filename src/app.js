@@ -9,9 +9,12 @@ class Application {
   constructor() {
     this.app = new Telegraf(process.env.BOT_ACCOUNT_TOKEN)
   }
+  async mapCronJobs() {
+    commandSelector(commands.START_CRONS)
+  }
   init() {
     this.app.start(ctx => {
-      commandSelector(commands.START, ctx)()
+      commandSelector(commands.START, ctx)
     })
     this.app.on('message', async ctx => {
       const { text, document } = ctx.message
@@ -31,6 +34,7 @@ class Application {
   }
   async start() {
     await this.app.launch()
+    await this.mapCronJobs()
     logger.log('Bot is running ✅')
   }
 }

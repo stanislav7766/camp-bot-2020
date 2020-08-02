@@ -23,7 +23,7 @@ const userSchema = new Schema({
   },
   phone: {
     type: String,
-    required: true,
+    required: false,
   },
   score: {
     type: Number,
@@ -41,6 +41,10 @@ const userSchema = new Schema({
     enum: TEAMS,
   },
   numberList: {
+    type: Number,
+    required: false,
+  },
+  chatID: {
     type: Number,
     required: false,
   },

@@ -1,6 +1,6 @@
 const authorizeUser = async (body, service) => {
-  const { nickname } = body
-  const { result, papyrus, keyboard } = await service.authorizeUser({ nickname })
+  const { nickname, chatID } = body
+  const { result, papyrus, keyboard } = await service.authorizeUser({ nickname, chatID })
   return { result, papyrus, keyboard }
 }
 

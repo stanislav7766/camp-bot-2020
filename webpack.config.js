@@ -1,6 +1,6 @@
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
-// const Dotenv = require('dotenv-webpack')
+const Dotenv = require('dotenv-webpack')
 
 const PATHS = {
   app: path.join(__dirname, 'src/index.js'),
@@ -21,12 +21,12 @@ module.exports = {
     }),
   ],
   target: 'node',
-  // plugins: [
-  //   new Dotenv({
-  //     path: './.env',
-  //     safe: true,
-  //   }),
-  // ],
+  plugins: [
+    new Dotenv({
+      path: './.env',
+      safe: true,
+    }),
+  ],
   module: {
     rules: [
       {

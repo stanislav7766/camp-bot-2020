@@ -1,5 +1,5 @@
 import ContextTree from './contextTree'
-import { commands, markupUser } from '../markup'
+import { commands, subCommands, markupUser } from '../markup'
 import { papyrus } from '../papyrus'
 
 const ctxTreeUser = new ContextTree()
@@ -9,6 +9,14 @@ ctxTreeUser.insert({
   keyboard: markupUser.initialKeyboard(),
   papyrus: papyrus.getInitialGreeting,
 })
+ctxTreeUser.insert(
+  {
+    command: subCommands.LYRICS_CHOOSE_ONE,
+    keyboard: [],
+    papyrus: papyrus.chooseInListLyrics,
+  },
+  commands.AUTHORIZE,
+)
 ctxTreeUser.insert(
   {
     command: commands.HELP,
@@ -33,14 +41,14 @@ ctxTreeUser.insert(
   },
   commands.AUTHORIZE,
 )
-ctxTreeUser.insert(
-  {
-    command: commands.MY_SCHEDULE,
-    keyboard: markupUser.afterMySchedule(),
-    papyrus: papyrus.getMyScheduleMsg,
-  },
-  commands.AUTHORIZE,
-)
+// ctxTreeUser.insert(
+//   {
+//     command: commands.MY_SCHEDULE,
+//     keyboard: markupUser.afterMySchedule(),
+//     papyrus: papyrus.getMyScheduleMsg,
+//   },
+//   commands.AUTHORIZE,
+// )
 ctxTreeUser.insert(
   {
     command: commands.INFO,
@@ -49,34 +57,34 @@ ctxTreeUser.insert(
   },
   commands.AUTHORIZE,
 )
-ctxTreeUser.insert(
-  {
-    command: commands.TODAY,
-    keyboard: markupUser.afterAuthorize(),
-    papyrus: papyrus.getTodayMsg,
-  },
-  commands.MY_SCHEDULE,
-)
-ctxTreeUser.insert(
-  {
-    command: commands.TOMORROW,
-    keyboard: markupUser.afterAuthorize(),
-    papyrus: papyrus.getTomorrowMsg,
-  },
-  commands.MY_SCHEDULE,
-)
-ctxTreeUser.insert(
-  {
-    command: commands.WHOLE,
-    keyboard: markupUser.afterAuthorize(),
-    papyrus: papyrus.getWholeMsg,
-  },
-  commands.MY_SCHEDULE,
-)
+// ctxTreeUser.insert(
+//   {
+//     command: commands.TODAY,
+//     keyboard: markupUser.afterAuthorize(),
+//     papyrus: papyrus.getTodayMsg,
+//   },
+//   commands.MY_SCHEDULE,
+// )
+// ctxTreeUser.insert(
+//   {
+//     command: commands.TOMORROW,
+//     keyboard: markupUser.afterAuthorize(),
+//     papyrus: papyrus.getTomorrowMsg,
+//   },
+//   commands.MY_SCHEDULE,
+// )
+// ctxTreeUser.insert(
+//   {
+//     command: commands.WHOLE,
+//     keyboard: markupUser.afterAuthorize(),
+//     papyrus: papyrus.getWholeMsg,
+//   },
+//   commands.MY_SCHEDULE,
+// )
 ctxTreeUser.insert(
   {
     command: commands.ALL_CAMP_SCHEDULE,
-    keyboard: markupUser.afterAllSchedule(),
+    keyboard: markupUser.afterAuthorize(),
     papyrus: papyrus.getAllScheduleMsg,
   },
   commands.AUTHORIZE,

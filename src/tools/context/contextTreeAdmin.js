@@ -75,134 +75,136 @@ ctxTreeAdmin.insert(
   commands.ADD_POINTS,
 )
 
-ctxTreeAdmin.insert(
-  {
-    command: commands.MANAGE_MEETUPS,
-    keyboard: markupAdmin.afterManageMeetups(),
-    papyrus: papyrus.getManageMeetups,
-  },
-  commands.AUTHORIZE,
-)
-ctxTreeAdmin.insert(
-  {
-    command: commands.ADD_MEETUP,
-    keyboard: markupAdmin.chooseMeetupsDay(),
-    papyrus: papyrus.getMeetupsDayMsg,
-  },
-  commands.MANAGE_MEETUPS,
-)
-ctxTreeAdmin.insert(
-  {
-    command: commands.EDIT_MEETUP,
-    keyboard: markupAdmin.chooseMeetupsDay(),
-    papyrus: papyrus.getMeetupsDayMsg,
-  },
-  commands.MANAGE_MEETUPS,
-)
-ctxTreeAdmin.insert(
-  {
-    command: commands.DELETE_MEETUP,
-    keyboard: markupAdmin.chooseMeetupsDay(),
-    papyrus: papyrus.getMeetupsDayMsg,
-  },
-  commands.MANAGE_MEETUPS,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.ADD_MEETUP_TITLE,
-    keyboard: [],
-    papyrus: papyrus.getAddMeetupTitleMsg,
-  },
-  commands.ADD_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.ADD_MEETUP_TIME,
-    keyboard: [],
-    papyrus: papyrus.getAddMeetupTimeMsg,
-  },
-  commands.ADD_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.ADD_MEETUP_FACILITATOR,
-    keyboard: [],
-    papyrus: papyrus.getAddMeetupFacilitatorMsg,
-  },
-  commands.ADD_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.ADD_MEETUP_AUDIENCE,
-    keyboard: [],
-    papyrus: papyrus.getAddMeetupAudienceMsg,
-  },
-  commands.ADD_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.ADD_MEETUP_LINK,
-    keyboard: [],
-    papyrus: papyrus.getAddMeetupLinkMsg,
-  },
-  commands.ADD_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.ADD_MEETUP_CONFIRM,
-    keyboard: [],
-    papyrus: papyrus.getAddMeetupConfirmMsg,
-  },
-  commands.ADD_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.DELETE_MEETUP_CHOOSE_ONE,
-    keyboard: [],
-    papyrus: papyrus.typeMeetupInList,
-  },
-  commands.DELETE_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.EDIT_MEETUP_CHOOSE_ONE,
-    keyboard: [],
-    papyrus: papyrus.typeMeetupInList,
-  },
-  commands.EDIT_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.EDIT_MEETUP_CHOOSE_PROP,
-    keyboard: markupAdmin.editMeetupProp(),
-    papyrus: papyrus.selectEditInMeetup,
-  },
-  commands.EDIT_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.DELETE_MEETUP_CONFIRM,
-    keyboard: [],
-    papyrus: papyrus.getDeleteMeetupConfirmMsg,
-  },
-  commands.DELETE_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.EDIT_MEETUP_TYPED_PROP,
-    keyboard: [],
-    papyrus: papyrus.typeNewMeetupProp,
-  },
-  commands.EDIT_MEETUP,
-)
-ctxTreeAdmin.insert(
-  {
-    command: subCommands.EDIT_MEETUP_CONFIRM,
-    keyboard: [],
-    papyrus: papyrus.getEditMeetupConfirmMsg,
-  },
-  commands.EDIT_MEETUP,
-)
+// ctxTreeAdmin.insert(
+//   {
+//     command: commands.MANAGE_MEETUPS,
+//     keyboard: markupAdmin.afterManageMeetups(),
+//     papyrus: papyrus.getManageMeetups,
+//   },
+//   commands.AUTHORIZE,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: commands.ADD_MEETUP,
+//     keyboard: markupAdmin.chooseMeetupsDay(),
+//     papyrus: papyrus.getMeetupsDayMsg,
+//   },
+//   commands.MANAGE_MEETUPS,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: commands.EDIT_MEETUP,
+//     keyboard: markupAdmin.chooseMeetupsDay(),
+//     papyrus: papyrus.getMeetupsDayMsg,
+//   },
+//   commands.MANAGE_MEETUPS,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: commands.DELETE_MEETUP,
+//     keyboard: markupAdmin.chooseMeetupsDay(),
+//     papyrus: papyrus.getMeetupsDayMsg,
+//   },
+//   commands.MANAGE_MEETUPS,
+// )
+
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.ADD_MEETUP_FACILITATOR,
+//     keyboard: [],
+//     papyrus: papyrus.getAddMeetupFacilitatorMsg,
+//   },
+//   commands.ADD_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.ADD_MEETUP_TITLE,
+//     keyboard: [],
+//     papyrus: papyrus.getAddMeetupTitleMsg,
+//   },
+//   commands.ADD_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.ADD_MEETUP_TIME,
+//     keyboard: [],
+//     papyrus: papyrus.getAddMeetupTimeMsg,
+//   },
+//   commands.ADD_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.ADD_MEETUP_AUDIENCE,
+//     keyboard: [],
+//     papyrus: papyrus.getAddMeetupAudienceMsg,
+//   },
+//   commands.ADD_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.ADD_MEETUP_LINK,
+//     keyboard: [],
+//     papyrus: papyrus.getAddMeetupLinkMsg,
+//   },
+//   commands.ADD_MEETUP,
+// )
+
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.ADD_MEETUP_CONFIRM,
+//     keyboard: [],
+//     papyrus: papyrus.getAddMeetupConfirmMsg,
+//   },
+//   commands.ADD_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.DELETE_MEETUP_CHOOSE_ONE,
+//     keyboard: [],
+//     papyrus: papyrus.typeMeetupInList,
+//   },
+//   commands.DELETE_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.EDIT_MEETUP_CHOOSE_ONE,
+//     keyboard: [],
+//     papyrus: papyrus.typeMeetupInList,
+//   },
+//   commands.EDIT_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.EDIT_MEETUP_CHOOSE_PROP,
+//     keyboard: markupAdmin.editMeetupProp(),
+//     papyrus: papyrus.selectEditInMeetup,
+//   },
+//   commands.EDIT_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.DELETE_MEETUP_CONFIRM,
+//     keyboard: [],
+//     papyrus: papyrus.getDeleteMeetupConfirmMsg,
+//   },
+//   commands.DELETE_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.EDIT_MEETUP_TYPED_PROP,
+//     keyboard: [],
+//     papyrus: papyrus.typeNewMeetupProp,
+//   },
+//   commands.EDIT_MEETUP,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: subCommands.EDIT_MEETUP_CONFIRM,
+//     keyboard: [],
+//     papyrus: papyrus.getEditMeetupConfirmMsg,
+//   },
+//   commands.EDIT_MEETUP,
+// )
 
 ctxTreeAdmin.insert(
   {
@@ -236,30 +238,30 @@ ctxTreeAdmin.insert(
   },
   commands.SEND_MSG_FILE,
 )
-ctxTreeAdmin.insert(
-  {
-    command: commands.TODAY,
-    keyboard: markupAdmin.afterAuthorize(),
-    papyrus: papyrus.getTodayMsg,
-  },
-  commands.MY_SCHEDULE,
-)
-ctxTreeAdmin.insert(
-  {
-    command: commands.TOMORROW,
-    keyboard: markupAdmin.afterAuthorize(),
-    papyrus: papyrus.getTomorrowMsg,
-  },
-  commands.MY_SCHEDULE,
-)
-ctxTreeAdmin.insert(
-  {
-    command: commands.WHOLE,
-    keyboard: markupAdmin.afterAuthorize(),
-    papyrus: papyrus.getWholeMsg,
-  },
-  commands.MY_SCHEDULE,
-)
+// ctxTreeAdmin.insert(
+//   {
+//     command: commands.TODAY,
+//     keyboard: markupAdmin.afterAuthorize(),
+//     papyrus: papyrus.getTodayMsg,
+//   },
+//   commands.MY_SCHEDULE,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: commands.TOMORROW,
+//     keyboard: markupAdmin.afterAuthorize(),
+//     papyrus: papyrus.getTomorrowMsg,
+//   },
+//   commands.MY_SCHEDULE,
+// )
+// ctxTreeAdmin.insert(
+//   {
+//     command: commands.WHOLE,
+//     keyboard: markupAdmin.afterAuthorize(),
+//     papyrus: papyrus.getWholeMsg,
+//   },
+//   commands.MY_SCHEDULE,
+// )
 ctxTreeAdmin.insert(
   {
     command: commands.ALL_CAMP_SCHEDULE,
@@ -291,5 +293,125 @@ ctxTreeAdmin.insert(
     papyrus: papyrus.getMyScheduleMsg,
   },
   commands.ALL_CAMP_SCHEDULE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.MANAGE_NOTIFY,
+    keyboard: markupAdmin.afterManageNotify(),
+    papyrus: papyrus.getManageMeetups,
+  },
+  commands.AUTHORIZE,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.ADD_NOTIFY,
+    keyboard: markupAdmin.chooseNotifyDay(),
+    papyrus: papyrus.getNotifyDayMsg,
+  },
+  commands.MANAGE_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.EDIT_NOTIFY,
+    keyboard: markupAdmin.chooseNotifyDay(),
+    papyrus: papyrus.getNotifyDayMsg,
+  },
+  commands.MANAGE_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: commands.DELETE_NOTIFY,
+    keyboard: markupAdmin.chooseNotifyDay(),
+    papyrus: papyrus.getNotifyDayMsg,
+  },
+  commands.MANAGE_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.ADD_NOTIFY_MSG,
+    keyboard: [],
+    papyrus: papyrus.getAddNotifyMsg,
+  },
+  commands.ADD_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.ADD_NOTIFY_TIME,
+    keyboard: [],
+    papyrus: papyrus.getAddNotifyTimeMsg,
+  },
+  commands.ADD_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.ADD_NOTIFY_AUDIENCE,
+    keyboard: [],
+    papyrus: papyrus.getAddNotifyAudienceMsg,
+  },
+  commands.ADD_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.ADD_NOTIFY_CONFIRM,
+    keyboard: [],
+    papyrus: papyrus.getAddNotifyConfirmMsg,
+  },
+  commands.ADD_MEETUP,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.DELETE_NOTIFY_CHOOSE_ONE,
+    keyboard: [],
+    papyrus: papyrus.typeNotifyInList,
+  },
+  commands.DELETE_NOTIFy,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.EDIT_NOTIFY_CHOOSE_ONE,
+    keyboard: [],
+    papyrus: papyrus.typeNotifyInList,
+  },
+  commands.EDIT_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.EDIT_NOTIFY_CHOOSE_PROP,
+    keyboard: markupAdmin.editNotifyProp(),
+    papyrus: papyrus.selectEditInNotify,
+  },
+  commands.EDIT_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.DELETE_NOTIFY_CONFIRM,
+    keyboard: [],
+    papyrus: papyrus.getDeleteNotifyConfirmMsg,
+  },
+  commands.DELETE_MEETUP,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.EDIT_NOTIFY_TYPED_PROP,
+    keyboard: [],
+    papyrus: papyrus.typeNewNotifyProp,
+  },
+  commands.EDIT_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.EDIT_NOTIFY_CONFIRM,
+    keyboard: [],
+    papyrus: papyrus.getEditNotifyConfirmMsg,
+  },
+  commands.EDIT_NOTIFY,
+)
+ctxTreeAdmin.insert(
+  {
+    command: subCommands.LYRICS_CHOOSE_ONE,
+    keyboard: [],
+    papyrus: papyrus.chooseInListLyrics,
+  },
+  commands.AUTHORIZE,
 )
 export const contextTreeAdmin = ctxTreeAdmin

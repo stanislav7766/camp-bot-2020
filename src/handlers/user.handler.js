@@ -24,8 +24,10 @@ const checkTypedPoints = async (body, service) => {
 }
 const confirmTypedPoints = async (body, service) => {
   const { answer } = body
-  const { result, papyrus, keyboard } = await service.confirmTypedPoints({ answer })
-  return { result, papyrus, keyboard }
+  const { result, papyrus, keyboard, additional, chatID } = await service.confirmTypedPoints({
+    answer,
+  })
+  return { result, papyrus, keyboard, additional, chatID }
 }
 const sendMsgFile = async (body, service) => {
   const { receiver } = body
@@ -39,8 +41,10 @@ const typedMsg = async (body, service) => {
 }
 const confirmMsgFileSend = async (body, service) => {
   const { answer } = body
-  const { result, papyrus, keyboard, msg, file } = await service.confirmMsgFileSend({ answer })
-  return { result, papyrus, keyboard, msg, file }
+  const { result, papyrus, keyboard, msg, file, chatsID } = await service.confirmMsgFileSend({
+    answer,
+  })
+  return { result, papyrus, keyboard, msg, file, chatsID }
 }
 const typedAskFile = async (body, service) => {
   const { answer } = body
@@ -52,9 +56,19 @@ const loadedFile = async (body, service) => {
   const { result, papyrus, keyboard } = await service.loadedFile({ file })
   return { result, papyrus, keyboard }
 }
+const getAllCampSchedule = async (body, service) => {
+  const { result, papyrus, keyboard } = await service.getAllCampSchedule()
+  return { result, papyrus, keyboard }
+}
+const getInfo = async (body, service) => {
+  const { nickname } = body
+  const { result, papyrus, keyboard } = await service.getInfo({ nickname })
+  return { result, papyrus, keyboard }
+}
 
 export default service => ({
   getMyScore: body => getMyScore(body, service),
+  getAllCampSchedule: () => getAllCampSchedule(null, service),
   getAllCampScore: () => getAllCampScore(null, service),
   getAllScores: () => getAllScores(null, service),
   getGroupList: body => getGroupList(body, service),
@@ -65,4 +79,5 @@ export default service => ({
   typedAskFile: body => typedAskFile(body, service),
   confirmMsgFileSend: body => confirmMsgFileSend(body, service),
   typedMsg: body => typedMsg(body, service),
+  getInfo: body => getInfo(body, service),
 })

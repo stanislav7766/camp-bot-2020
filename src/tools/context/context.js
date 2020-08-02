@@ -11,8 +11,11 @@ function Context() {
       file: null,
     },
     typedPoints: '',
-    meetupProp: '',
-    meetup: {},
+    // meetupProp: '',
+    // meetup: {},
+    notifyProp: '',
+    notify: {},
+    cronJobs: {},
   }
 }
 

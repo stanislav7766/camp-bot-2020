@@ -6,9 +6,9 @@ export const markupUser = {
   afterAuthorize: () => [
     ...sharedMarkup,
     [commands.INFO],
-    [commands.MY_SCHEDULE],
+    // [commands.MY_SCHEDULE],
     [commands.MY_SCORE],
   ],
   afterMySchedule: () => [[commands.TODAY], [commands.TOMORROW], [commands.WHOLE]],
-  afterAllSchedule: () => [[commands.GROUP1], [commands.GROUP2], [commands.GROUP3]],
+  // afterAllSchedule: () => [[commands.GROUP1], [commands.GROUP2], [commands.GROUP3]],
 }

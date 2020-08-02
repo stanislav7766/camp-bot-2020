@@ -2,15 +2,18 @@ import { context, contextTreeAdmin, contextTreeUser } from '../tools/context'
 import { commands } from '../tools/markup'
 import { papyrus } from '../tools/papyrus'
 
-const { getNotAuthorizedMsg } = papyrus
+const { getNotAuthorizedMsg, privacySettings } = papyrus
 
 export const authorizeUser = async (body, model) => {
-  const { nickname } = body
+  const { nickname, chatID } = body
   const { keyboard } = context.getContext()
 
-  if (!nickname) return { result: 'failed', papyrus: 'твой ник скрыт, измени настройки', keyboard }
-  const user = await model.findOne({ nickname })
+  if (!nickname || !chatID) return { result: 'failed', papyrus: privacySettings, keyboard }
+  const user = await model.findOneAndUpdate({ nickname }, { $set: { chatID } }, { new: true })
+
+  // await model.findOne({ nickname })
   if (!user) return { result: 'failed', papyrus: getNotAuthorizedMsg, keyboard }
+
   const node =
     user.status === 'user'
       ? contextTreeUser.getCurrentCtx(commands.AUTHORIZE)

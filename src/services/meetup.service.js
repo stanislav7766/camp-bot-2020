@@ -2,10 +2,12 @@ import { context, contextTreeAdmin } from '../tools/context'
 import { commands, subCommands } from '../tools/markup'
 import { papyrus } from '../tools/papyrus'
 import { isTime, isValidAudience, isURL, isDay } from '../tools/validation'
+import { DAYS_DATES_MAP } from '../constants'
+
 const mapMeetupsToText = meetups =>
   meetups.reduce((accum, { title, time }, ind) => `${accum}${ind + 1}.  ${title}   ${time}\n `, '')
 
-const addMeetup = async (body, model) => {
+const addMeetup = async (body, models) => {
   const { dayCmd } = body
   const { meetup } = context.getContext()
   meetup.day = dayCmd.substring(1)
@@ -14,24 +16,26 @@ const addMeetup = async (body, model) => {
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
 }
 
-const deleteMeetup = async (body, model) => {
+const deleteMeetup = async (body, models) => {
   const { dayCmd } = body
-  const meetups = await model.find({ day: dayCmd.substring(1) })
+  const { meetupModel } = models
+  const meetups = await meetupModel.find({ day: dayCmd.substring(1) })
   const textList = mapMeetupsToText(meetups)
   const node = contextTreeAdmin.getCurrentCtx(subCommands.DELETE_MEETUP_CHOOSE_ONE)
   context.emit('changeContext', { ...node })
   return { result: 'ok', papyrus: node.papyrus(textList), keyboard: node.keyboard }
 }
-const editMeetup = async (body, model) => {
+const editMeetup = async (body, models) => {
   const { dayCmd } = body
-  const meetups = await model.find({ day: dayCmd.substring(1) })
+  const { meetupModel } = models
+  const meetups = await meetupModel.find({ day: dayCmd.substring(1) })
   const textList = mapMeetupsToText(meetups)
   const node = contextTreeAdmin.getCurrentCtx(subCommands.EDIT_MEETUP_CHOOSE_ONE)
   context.emit('changeContext', { ...node })
   return { result: 'ok', papyrus: node.papyrus(textList), keyboard: node.keyboard }
 }
 
-const typedMeetupTitle = async (body, model) => {
+const typedMeetupTitle = async (body, models) => {
   const { title } = body
   const { meetup } = context.getContext()
   meetup.title = title
@@ -40,7 +44,7 @@ const typedMeetupTitle = async (body, model) => {
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
 }
 
-const typedMeetupTime = async (body, model) => {
+const typedMeetupTime = async (body, models) => {
   const { time } = body
   const { meetup } = context.getContext()
   if (!isTime(time)) return incorrectTime()
@@ -49,7 +53,7 @@ const typedMeetupTime = async (body, model) => {
   context.emit('changeContext', { ...node, meetup })
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
 }
-const typedMeetupFacilitator = async (body, model) => {
+const typedMeetupFacilitator = async (body, models) => {
   const { facilitator } = body
   const { meetup } = context.getContext()
 
@@ -58,7 +62,7 @@ const typedMeetupFacilitator = async (body, model) => {
   context.emit('changeContext', { ...node, meetup })
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
 }
-const typedMeetupAudience = async (body, model) => {
+const typedMeetupAudience = async (body, models) => {
   const { audience } = body
   const { meetup } = context.getContext()
   if (!isValidAudience(audience)) return incorrectAudience()
@@ -68,7 +72,7 @@ const typedMeetupAudience = async (body, model) => {
   context.emit('changeContext', { ...node, meetup })
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
 }
-const typedMeetupLink = async (body, model) => {
+const typedMeetupLink = async (body, models) => {
   const { link } = body
   const { meetup } = context.getContext()
   if (!isURL(link)) return incorrectLink()
@@ -78,9 +82,10 @@ const typedMeetupLink = async (body, model) => {
   context.emit('changeContext', { ...node, meetup })
   return { result: 'ok', papyrus: node.papyrus(text), keyboard: node.keyboard }
 }
-const typedDeleteMeetup = async (body, model) => {
+const typedDeleteMeetup = async (body, models) => {
   const { title } = body
-  const meetup = await model.findOne({ title })
+  const { meetupModel } = models
+  const meetup = await meetupModel.findOne({ title })
   if (!meetup) {
     const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
     context.emit('changeContext', { ...node })
@@ -90,9 +95,10 @@ const typedDeleteMeetup = async (body, model) => {
   context.emit('changeContext', { ...node, meetup })
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
 }
-const typedEditMeetup = async (body, model) => {
+const typedEditMeetup = async (body, models) => {
   const { title } = body
-  const meetup = await model.findOne({ title })
+  const { meetupModel } = models
+  const meetup = await meetupModel.findOne({ title })
   if (!meetup) {
     const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
     context.emit('changeContext', { ...node })
@@ -102,39 +108,60 @@ const typedEditMeetup = async (body, model) => {
   context.emit('changeContext', { ...node, meetup })
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
 }
-const confirmTypedMeetup = async (body, model) => {
+const confirmTypedMeetup = async (body, models) => {
   const { answer } = body
+  const { meetupModel, notificationModel } = models
+
   let additional = ``
   const { meetup } = context.getContext()
   if (answer === 'yes') {
-    //run cron job
-    await model.create(meetup)
+    const notification = {}
+    notification.title = meetup.title
+
+    notification.date = DAYS_DATES_MAP[meetup.day]
+    notification.msg = 'Hey meeting in 5 min'
+    notification.time = trimTime(meetup.time)
+    await meetupModel.create(meetup)
+    await notificationModel.create(notification)
+
     additional = `You’ve added the following meetup.\n`
   }
   const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
   context.emit('changeContext', { ...node, meetup: {} })
   return { result: 'ok', papyrus: additional + node.papyrus, keyboard: node.keyboard }
 }
-const confirmTypedDeleteMeetup = async (body, model) => {
+const confirmTypedDeleteMeetup = async (body, models) => {
   const { answer } = body
+  const { meetupModel, notificationModel } = models
   let additional = ``
   const { meetup } = context.getContext()
   if (answer === 'yes') {
-    //delete cron job
-    await model.findOneAndRemove({ title: meetup.title })
+    await notificationModel.findOneAndRemove({ title: meetup.title })
+    await meetupModel.findOneAndRemove({ title: meetup.title })
     additional = `You’ve deleted the following meetup.\n`
   }
   const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
   context.emit('changeContext', { ...node, meetup: {} })
   return { result: 'ok', papyrus: additional + node.papyrus, keyboard: node.keyboard }
 }
-const confirmTypedEditMeetup = async (body, model) => {
+const confirmTypedEditMeetup = async (body, models) => {
   const { answer } = body
+  const { meetupModel, notificationModel } = models
   let additional = ``
   const { meetup } = context.getContext()
   if (answer === 'yes') {
-    //change cron job
-    await model.findOneAndUpdate({ title: meetup.title }, { $set: meetup }, { new: true })
+    const notification = {}
+    notification.title = meetup.title
+    notification.date = DAYS_DATES_MAP[meetup.day]
+    notification.msg = 'Hey meeting in 5 min'
+    notification.time = trimTime(meetup.time)
+    await meetupModel.findOneAndUpdate({ title: meetup.title }, { $set: meetup }, { new: true })
+    await notificationModel.findOneAndUpdate(
+      { title: meetup.title },
+      { $set: notification },
+      { new: true },
+    )
+
     additional = `You’ve edited the following meetup.\n`
   }
   const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
@@ -142,13 +169,13 @@ const confirmTypedEditMeetup = async (body, model) => {
   return { result: 'ok', papyrus: additional + node.papyrus, keyboard: node.keyboard }
 }
 
-const editMeetupProp = async (body, model) => {
+const editMeetupProp = async (body, models) => {
   const { prop } = body
   const node = contextTreeAdmin.getCurrentCtx(subCommands.EDIT_MEETUP_TYPED_PROP)
   context.emit('changeContext', { ...node, meetupProp: prop })
   return { result: 'ok', papyrus: node.papyrus(prop), keyboard: node.keyboard }
 }
-const typedEditMeetupProp = async (body, model) => {
+const typedEditMeetupProp = async (body, models) => {
   const { prop } = body
   const { meetupProp, meetup } = context.getContext()
 
@@ -187,21 +214,25 @@ const incorrectDay = () => {
   context.emit('changeContext', { ...node })
   return { result: 'failed', papyrus: papyrus.incorrectMeetupDay, keyboard: node.keyboard }
 }
+const trimTime = text => {
+  const [startTime, endTime] = text.split('-')
+  return startTime
+}
 
-export default model => ({
-  addMeetup: body => addMeetup(body, model),
-  deleteMeetup: body => deleteMeetup(body, model),
-  editMeetup: body => editMeetup(body, model),
-  typedMeetupTitle: body => typedMeetupTitle(body, model),
-  typedMeetupTime: body => typedMeetupTime(body, model),
-  typedMeetupFacilitator: body => typedMeetupFacilitator(body, model),
-  typedMeetupAudience: body => typedMeetupAudience(body, model),
-  typedMeetupLink: body => typedMeetupLink(body, model),
-  confirmTypedMeetup: body => confirmTypedMeetup(body, model),
-  confirmTypedDeleteMeetup: body => confirmTypedDeleteMeetup(body, model),
-  confirmTypedEditMeetup: body => confirmTypedEditMeetup(body, model),
-  typedDeleteMeetup: body => typedDeleteMeetup(body, model),
-  typedEditMeetup: body => typedEditMeetup(body, model),
-  editMeetupProp: body => editMeetupProp(body, model),
-  typedEditMeetupProp: body => typedEditMeetupProp(body, model),
+export default models => ({
+  addMeetup: body => addMeetup(body, models),
+  deleteMeetup: body => deleteMeetup(body, models),
+  editMeetup: body => editMeetup(body, models),
+  typedMeetupTitle: body => typedMeetupTitle(body, models),
+  typedMeetupTime: body => typedMeetupTime(body, models),
+  typedMeetupFacilitator: body => typedMeetupFacilitator(body, models),
+  typedMeetupAudience: body => typedMeetupAudience(body, models),
+  typedMeetupLink: body => typedMeetupLink(body, models),
+  confirmTypedMeetup: body => confirmTypedMeetup(body, models),
+  confirmTypedDeleteMeetup: body => confirmTypedDeleteMeetup(body, models),
+  confirmTypedEditMeetup: body => confirmTypedEditMeetup(body, models),
+  typedDeleteMeetup: body => typedDeleteMeetup(body, models),
+  typedEditMeetup: body => typedEditMeetup(body, models),
+  editMeetupProp: body => editMeetupProp(body, models),
+  typedEditMeetupProp: body => typedEditMeetupProp(body, models),
 })

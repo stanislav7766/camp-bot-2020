@@ -1,8 +1,8 @@
 import { context, contextTreeAdmin, contextTreeUser } from '../tools/context'
 import { commands, subCommands } from '../tools/markup'
-import { TEAMS, STATUS } from '../constants'
+import { TEAMS, STATUS, ALL_CAMP_SCHEDULE_LINK, getTeamBase } from '../constants'
 import { textToPdf } from '../tools/pdf'
-import { isNumberPoints, isYesNo } from '../tools/validation'
+import { isNumberPoints, isYesNo, isTeam, isGroup } from '../tools/validation'
 // todo move contex to db
 const getEmptyTeamScores = teams => teams.reduce((accum, team) => ({ ...accum, [team]: 0 }), {})
 
@@ -58,7 +58,8 @@ const getGroupList = async (body, model) => {
   //todo res failed
   //todo sort by numberList
   const textList = users.reduce(
-    (accum, { name, nickname }, ind) => `${accum}${ind + 1}.  ${name}   ${nickname}\n `,
+    (accum, { name, nickname, numberList }, ind) =>
+      `${accum}${numberList}.  ${name}   ${nickname}\n `,
     '',
   )
   const node = contextTreeAdmin.getCurrentCtx(subCommands.ADD_POINTS_CHOOSE_ONE)
@@ -81,17 +82,25 @@ const confirmTypedPoints = async (body, model) => {
   const { answer } = body
   const { typedPoints } = context.getContext()
   let additional = ``
+  let chatID
   if (answer === 'yes') {
     const [numberList, countPoints] = typedPoints.split('-')
     const user = await model.findOne({ numberList })
     user.score += Number(countPoints)
     await model.findOneAndUpdate({ numberList }, { $set: user }, { new: true })
     additional = `You’ve gave the following points: ${countPoints}\n`
+    chatID = user.chatID
   }
 
   const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
   context.emit('changeContext', { ...node, typedPoints: '' })
-  return { result: 'ok', papyrus: additional + node.papyrus, keyboard: node.keyboard }
+  return {
+    result: 'ok',
+    papyrus: node.papyrus,
+    keyboard: node.keyboard,
+    additional,
+    chatID,
+  }
 }
 const sendMsgFile = async (body, model) => {
   const { receiver } = body
@@ -149,6 +158,11 @@ const typedAskFile = async (body, model) => {
 const confirmMsgFileSend = async (body, model) => {
   const { answer } = body
   const { msgFile } = context.getContext()
+  const prop = isGroup(msgFile.receiverMsg) ? 'group' : isTeam(msgFile.receiverMsg) ? 'team' : null
+  const users = await model.find({ [prop]: msgFile.receiverMsg })
+  const chatsID = users
+    .map(user => user.chatID && user.chatID)
+    .filter(chatID => chatID !== undefined)
   const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
   context.emit('changeContext', { ...node })
   if (answer === 'yes') {
@@ -158,10 +172,16 @@ const confirmMsgFileSend = async (body, model) => {
       keyboard: node.keyboard,
       msg: msgFile.msg,
       file: msgFile.file,
+      chatsID,
     }
   }
 
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
+}
+const getAllCampSchedule = async (body, model) => {
+  const node = contextTreeUser.getCurrentCtx(commands.ALL_CAMP_SCHEDULE)
+  context.emit('changeContext', { ...node })
+  return { result: 'ok', papyrus: node.papyrus(ALL_CAMP_SCHEDULE_LINK), keyboard: node.keyboard }
 }
 
 const incorrectYesNo = () => {
@@ -169,8 +189,17 @@ const incorrectYesNo = () => {
   context.emit('changeContext', { ...node })
   return { result: 'failed', papyrus: papyrus.incorrectYesNo, keyboard: node.keyboard }
 }
+const getInfo = async (body, model) => {
+  const { nickname } = body
+  const { team } = await model.findOne({ nickname })
+  const teamBase = getTeamBase(team)
+  const node = contextTreeUser.getCurrentCtx(commands.INFO)
+  context.emit('changeContext', { ...node })
+  return { result: 'ok', papyrus: node.papyrus({ team, teamBase }), keyboard: node.keyboard }
+}
 
 export default model => ({
+  getInfo: body => getInfo(body, model),
   getMyScore: body => getMyScore(body, model),
   getAllCampScore: () => getAllCampScore(null, model),
   getAllScores: () => getAllScores(null, model),
@@ -182,4 +211,5 @@ export default model => ({
   loadedFile: body => loadedFile(body, model),
   typedMsg: body => typedMsg(body, model),
   confirmMsgFileSend: body => confirmMsgFileSend(body, model),
+  getAllCampSchedule: () => getAllCampSchedule(null, model),
 })

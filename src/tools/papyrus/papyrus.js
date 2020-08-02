@@ -2,22 +2,19 @@ export const papyrus = {
   getInitialGreeting: `Welcome to MASCOT bot! Select /authorize in order to register.`,
   getHelpInfo:
     'MASCOT bot is aimed to handle needs of participants during Online MASCOT2020. Use /authorize command in order to register. Note: only campers, JCs and staff members of MASCOT2020 are accepted.',
-  getInfoMsg: `Need any help? Feel free to contact!
-  Directors:
-  Valera Dychakivskyi: @dychakivsky, +380672174564
-  Yurij Korolyshyn - @yura_korol, +380966693128
-  Your Team Leaders:
-  … (info from base)
+  getInfoMsg: ({ team, teamBase }) => `Need any help? Feel free to contact!
+  DIRECTORS:
+  @yura_korol Yura
+  @dychakivsky Valera
+  ${team.toUpperCase()} TEAM
+  ${teamBase}
   `,
   afterAuthorizeMsgUser: 'Choose something',
   afterAuthorizeMsgAdmin: 'Choose something',
   myScoreMsg: score =>
     `Hey! Your current score: ${score}. Be active during lessons to reach more ;)`,
-  getTodayMsg: 'Вот расписание на сегодня',
-  getTomorrowMsg: 'Вот расписание на завтра',
-  getWholeMsg: 'Вот расписание на все дни',
-  getMyScheduleMsg: 'На когда нужно расписание?',
-  getAllScheduleMsg: 'На какую группу нужно расписание?',
+  privacySettings: 'Check your privacy settings. Something wrong with your nickname ',
+  getAllScheduleMsg: link => `Hey, here your schedule's link ${link}`,
   getAllScoresMsg: teamScores => `Scores per team:\n ${teamScores}`,
   getAllScoresMsgPdf: 'Here all scores.',
   getNotAuthorizedMsg:
@@ -27,24 +24,43 @@ export const papyrus = {
   incorrectTypedPoints: `Incorrect input. Type [camper's number]-[points count].\For instance 1-10`,
   checkTypedNumber: `Are you sure? Type yes/no`,
   getManageMeetups: 'Choose the needed operation',
-  getMeetupsDayMsg: 'Choose the needed day',
-  getAddMeetupTitleMsg: `Type meetup's title`,
-  getAddMeetupTimeMsg: `Type meetup's time. Format: hh:mm`,
-  getAddMeetupFacilitatorMsg: `Type meetup's facilitators. Type nickname1,nickname2.`,
-  getAddMeetupAudienceMsg: `Type meetup's audience. Type all/group1-3/team's name(orange)`,
-  getAddMeetupLinkMsg: `Type meetup's link.`,
-  getAddMeetupConfirmMsg: text =>
-    `Current version of your meetup:\n ${text} \n Are you sure you want to add it? Type yes/no`,
-  getDeleteMeetupConfirmMsg: `Are you sure you want to delete it? Type yes/no`,
-  typeMeetupInList: list => `${list} \n Type [meetup's title].\nFor instance hello`,
-  IncorrectMeetupTitle: 'This meetup does not exist',
-  incorrectMeetupTime: `Incorrect time format. Format hh:mm. Type for instance 08:00`,
-  incorrectMeetupAudience: `Incorrect audience choice. Type all/group1-3/team's name(orange)`,
-  incorrectMeetupDay: `Incorrect day choice. Type day1-6`,
-  incorrectMeetupLink: 'Incorrect link url',
-  selectEditInMeetup: 'Select which part of meetup you want to edit',
-  typeNewMeetupProp: prop => `Type new <${prop}> for selected meetup`,
-  getEditMeetupConfirmMsg: ({ prop, from, to }) =>
+  // getMeetupsDayMsg: 'Choose the needed day',
+  getNotifyDayMsg: 'Choose the needed day',
+
+  // getAddMeetupTitleMsg: `Type meetup's title`,
+  getAddNotifyMsg: `Type notify's msg`,
+  // getAddMeetupTimeMsg: `Type meetup's time frame. Format: [hh:mm]-[hh:mm]. For instance 12:00-13:00`,
+  getAddNotifyTimeMsg: `Type notify's time. Format: [hh:mm]. For instance 12:00`,
+
+  // getAddMeetupFacilitatorMsg: `Type meetup's facilitators. Type nickname1,nickname2.`,
+  // getAddMeetupAudienceMsg: `Type meetup's audience. Type all/group1-3/team's name(orange)`,
+  getAddNotifyAudienceMsg: `Type notify's audience. Type all/group1-3/team's name(orange)`,
+  // getAddMeetupLinkMsg: `Type meetup's link.`,
+  // getAddMeetupConfirmMsg: text =>
+  // `Current version of your meetup:\n ${text} \n Are you sure you want to add it? Type yes/no`,
+  getAddNotifyConfirmMsg: text =>
+    `Current version of your notify:\n ${text} \n Are you sure you want to add it? Type yes/no`,
+  // getDeleteMeetupConfirmMsg: `Are you sure you want to delete it? Type yes/no`,
+  getDeleteNotifyConfirmMsg: `Are you sure you want to delete it? Type yes/no`,
+  // typeMeetupInList: list => `${list} \n Type [meetup's title].\nFor instance hello`,
+  typeNotifyInList: list => `${list} \n Type [notify's time].\nFor instance 12:00`,
+  // IncorrectMeetupTitle: 'This meetup does not exist',
+  // incorrectMeetupTime: `Incorrect time format. Format [hh:mm]-[hh:mm]. Type for instance 08:00-09:00`,
+  // incorrectMeetupAudience: `Incorrect audience choice. Type all/group1-3/team's name(orange)`,
+  // incorrectMeetupDay: `Incorrect day choice. Type day1-6`,
+  // incorrectMeetupLink: 'Incorrect link url',
+  IncorrectNotifyTitle: 'This notify does not exist',
+  incorrectNotifyTime: `Incorrect time format. Format [hh:mm]-[hh:mm]. Type for instance 08:00-09:00`,
+  incorrectNotifyAudience: `Incorrect audience choice. Type all/group1-3/team's name(orange)`,
+  incorrectNotifyDay: `Incorrect day choice. Type day1-6`,
+
+  // selectEditInMeetup: 'Select which part of meetup you want to edit',
+  selectEditInNotify: 'Select which part of meetup you want to edit',
+  // typeNewMeetupProp: prop => `Type new <${prop}> for selected meetup`,
+  typeNewNotifyProp: prop => `Type new <${prop}> for selected notify`,
+  // getEditMeetupConfirmMsg: ({ prop, from, to }) =>
+  // `Are you sure you want to edit <${prop}> from '${from}' to '${to}'? Type yes/no`,
+  getEditNotifyConfirmMsg: ({ prop, from, to }) =>
     `Are you sure you want to edit <${prop}> from '${from}' to '${to}'? Type yes/no`,
   typeMsgForSending: 'Type new message for choosed audience',
   askFileForSendingMsg: 'Are you going to load file? Type yes/no',
@@ -55,4 +71,5 @@ export const papyrus = {
     `Are you sure you want to send msg:\n'${msg}'${
       filename ? '\nWith file ' + "'" + filename + "'" : ''
     } for ${receiver}? Type yes/no`,
+  chooseInListLyrics: `Type lyrics number. For instance 1`,
 }
