@@ -10,7 +10,7 @@ export const markupAdmin = {
     [commands.SEND_MSG_FILE],
     [commands.GET_ALL_SCORES],
     [commands.ADD_POINTS],
-    [commands.MANAGE_NOTIFY],
+    // [commands.MANAGE_NOTIFY],
   ],
   afterAddPoints: () => [[commands.GROUP1], [commands.GROUP2], [commands.GROUP3]],
   // afterManageMeetups: () => [
