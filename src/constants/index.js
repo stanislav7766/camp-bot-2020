@@ -21,25 +21,38 @@ export const getTgUrl = ({ id, msg }) =>
 export const getTeamBase = team =>
   ({
     ['orange']: `
-    https://t.me/orangeteam10820
     @secretgeorge Sviat
     @irynachr Ira`,
     ['pink']: `
-    https://t.me/joinchat/GLclpxlDO3LYQNqQNPkq0Q
     @Yana_Pokora Yana
     @xnamed Vlad`,
     ['purple']: `
-    https://t.me/joinchat/FvaHrByXzfjWw3cb4bAAQw
     @yelyzavetar Liza
     @alinakolpakova Alina`,
     ['navy']: `
-    https://t.me/joinchat/DOTCqxvQlRKkB3JxvSyr2A
     @annamtshk Annushka
     @hrynchakm Max`,
     ['white']: `
-    https://t.me/joinchat/Gat8Llfdf0SUL_5qmuXZOw
     @DashaKorotkevych Dasha
     @astarianka Anka`,
+  }[team])
+export const getTeamBaseChat = team =>
+  ({
+    ['orange']: `
+    https://t.me/orangeteam10820
+  `,
+    ['pink']: `
+    https://t.me/joinchat/GLclpxlDO3LYQNqQNPkq0Q
+    `,
+    ['purple']: `
+    https://t.me/joinchat/FvaHrByXzfjWw3cb4bAAQw
+    `,
+    ['navy']: `
+    https://t.me/joinchat/DOTCqxvQlRKkB3JxvSyr2A
+    `,
+    ['white']: `
+    https://t.me/joinchat/Gat8Llfdf0SUL_5qmuXZOw
+    `,
   }[team])
 
 export const allLyrics = {

@@ -1,6 +1,6 @@
 import { context, contextTreeAdmin, contextTreeUser } from '../tools/context'
 import { commands, subCommands } from '../tools/markup'
-import { TEAMS, STATUS, ALL_CAMP_SCHEDULE_LINK, getTeamBase } from '../constants'
+import { TEAMS, STATUS, ALL_CAMP_SCHEDULE_LINK, getTeamBase, getTeamBaseChat } from '../constants'
 import { textToPdf } from '../tools/pdf'
 import { isNumberPoints, isYesNo, isTeam, isGroup } from '../tools/validation'
 // todo move contex to db
@@ -159,7 +159,9 @@ const confirmMsgFileSend = async (body, model) => {
   const { answer } = body
   const { msgFile } = context.getContext()
   const prop = isGroup(msgFile.receiverMsg) ? 'group' : isTeam(msgFile.receiverMsg) ? 'team' : null
-  const users = await model.find({ [prop]: msgFile.receiverMsg })
+  const users = await model.find(
+    msgFile.receiverMsg === 'all_camp_audience' ? {} : { [prop]: msgFile.receiverMsg },
+  )
   const chatsID = users
     .map(user => user.chatID && user.chatID)
     .filter(chatID => chatID !== undefined)
@@ -191,11 +193,16 @@ const incorrectYesNo = () => {
 }
 const getInfo = async (body, model) => {
   const { nickname } = body
-  const { team } = await model.findOne({ nickname })
+  const { team, group } = await model.findOne({ nickname })
+  const teamChat = getTeamBaseChat(team)
   const teamBase = getTeamBase(team)
   const node = contextTreeUser.getCurrentCtx(commands.INFO)
   context.emit('changeContext', { ...node })
-  return { result: 'ok', papyrus: node.papyrus({ team, teamBase }), keyboard: node.keyboard }
+  return {
+    result: 'ok',
+    papyrus: node.papyrus({ team, teamBase, teamChat, group }),
+    keyboard: node.keyboard,
+  }
 }
 
 export default model => ({

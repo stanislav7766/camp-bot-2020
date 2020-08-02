@@ -27,6 +27,7 @@ export const commandSelector = (command, ctx) =>
     [commands.ADD_NOTIFY]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
     [commands.EDIT_NOTIFY]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
     [commands.DELETE_NOTIFY]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
+    [commands.ALL_CAMP_AUDIENCE]: () => checkGroupTeamCommands(ctx, command),
     [commands.GROUP1]: () => checkGroupTeamCommands(ctx, command),
     [commands.GROUP2]: () => checkGroupTeamCommands(ctx, command),
     [commands.GROUP3]: () => checkGroupTeamCommands(ctx, command),

@@ -54,6 +54,7 @@ export const markupAdmin = {
     [commands.EDIT_NOTIFY_AUDIENCE],
   ],
   afterSendMsgFile: () => [
+    [commands.ALL_CAMP_AUDIENCE],
     [commands.GROUP1],
     [commands.GROUP2],
     [commands.GROUP3],

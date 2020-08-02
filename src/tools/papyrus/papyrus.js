@@ -2,11 +2,16 @@ export const papyrus = {
   getInitialGreeting: `Welcome to MASCOT bot! Select /authorize in order to register.`,
   getHelpInfo:
     'MASCOT bot is aimed to handle needs of participants during Online MASCOT2020. Use /authorize command in order to register. Note: only campers, JCs and staff members of MASCOT2020 are accepted.',
-  getInfoMsg: ({ team, teamBase }) => `Need any help? Feel free to contact!
-  DIRECTORS:
+  getInfoMsg: ({ team, group, teamChat, teamBase }) => `
+  \t
+  Your team: ${team}
+  Your group: ${group}
+  Your team chat: ${teamChat}
+  Contacts:
+  Directors:
   @yura_korol Yura
   @dychakivsky Valera
-  ${team.toUpperCase()} TEAM
+  Your team leaders: 
   ${teamBase}
   `,
   afterAuthorizeMsgUser: 'Choose something',
@@ -66,7 +71,7 @@ export const papyrus = {
   askFileForSendingMsg: 'Are you going to load file? Type yes/no',
   selectAudience: 'Select audience',
   incorrectYesNo: 'Incorrect input',
-  waitLoadFile: 'Send me needed file',
+  waitLoadFile: 'Send me needed FILE. FILE, not just a picture from gallery 😉',
   sendMsgFileConfirm: ({ msg, filename, receiver }) =>
     `Are you sure you want to send msg:\n'${msg}'${
       filename ? '\nWith file ' + "'" + filename + "'" : ''
