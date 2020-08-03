@@ -1,6 +1,7 @@
 import { context, contextTreeAdmin, contextTreeUser } from '../tools/context'
 import { commands, subCommands } from '../tools/markup'
 import { TEAMS, STATUS, ALL_CAMP_SCHEDULE_LINK, getTeamBase, getTeamBaseChat } from '../constants'
+import { papyrus } from '../tools/papyrus'
 import { textToPdf } from '../tools/pdf'
 import { isNumberPoints, isYesNo, isTeam, isGroup } from '../tools/validation'
 // todo move contex to db
@@ -10,7 +11,7 @@ const getMyScore = async (body, model) => {
   const { nickname } = body
   const { keyboard } = context.getContext()
 
-  if (!nickname) return { result: 'failed', papyrus: 'твой ник скрыт, измени настройки', keyboard }
+  if (!nickname) return { result: 'failed', papyrus: papyrus.privacySettings, keyboard }
   const user = await model.findOne({ nickname })
   const node = contextTreeUser.getCurrentCtx(commands.MY_SCORE)
 
