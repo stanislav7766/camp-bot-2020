@@ -63,7 +63,7 @@ const getGroupList = async (body, model) => {
     '',
   )
   const node = contextTreeAdmin.getCurrentCtx(subCommands.ADD_POINTS_CHOOSE_ONE)
-  context.emit('changeContext', { ...node })
+  context.emit('changeContext', { ...node, groupList: group })
   return { result: 'ok', papyrus: node.papyrus(textList), keyboard: node.keyboard }
 }
 const checkTypedPoints = async (body, model) => {
@@ -80,14 +80,14 @@ const checkTypedPoints = async (body, model) => {
 
 const confirmTypedPoints = async (body, model) => {
   const { answer } = body
-  const { typedPoints } = context.getContext()
+  const { typedPoints, groupList } = context.getContext()
   let additional = ``
   let chatID
   if (answer === 'yes') {
     const [numberList, countPoints] = typedPoints.split('-')
-    const user = await model.findOne({ numberList })
+    const user = await model.findOne({ numberList, group: groupList })
     user.score += Number(countPoints)
-    await model.findOneAndUpdate({ numberList }, { $set: user }, { new: true })
+    await model.findOneAndUpdate({ numberList, group: groupList }, { $set: user }, { new: true })
     additional = `You’ve given the following  points: ${countPoints}\n`
     chatID = user.chatID
   }

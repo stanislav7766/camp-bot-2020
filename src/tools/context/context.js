@@ -5,6 +5,7 @@ function Context() {
     command: '',
     keyboard: '',
     papyrus: '',
+    groupList: '',
     msgFile: {
       receiverMsg: '',
       msg: '',
