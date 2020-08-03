@@ -4,6 +4,7 @@
   "main": "index.js",
   "author": "stanislav7766",
   "scripts": {
+    "heroku-prebild":"npm install --dev",
     "live": "nodemon",
     "build": "webpack --mode production",
     "start":  "npm run build && node dist/index.js"
