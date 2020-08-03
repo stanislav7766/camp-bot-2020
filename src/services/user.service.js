@@ -166,7 +166,7 @@ const confirmMsgFileSend = async (body, model) => {
     .map(user => user.chatID && user.chatID)
     .filter(chatID => chatID !== undefined)
   const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
-  context.emit('changeContext', { ...node })
+  context.emit('changeContext', { ...node, msgFile: { receiverMsg: '', msg: '', file: null } })
   if (answer === 'yes') {
     return {
       result: 'ok',
