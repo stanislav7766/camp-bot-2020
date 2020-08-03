@@ -1,32 +1,27 @@
 import commandHandlers from '../handlers'
-import { commands, subCommands } from '../tools/markup'
+import { commands, subCommands, markupUser } from '../tools/markup'
 import { contextTreeUser, contextTreeAdmin, context } from '../tools/context'
-import { getAllLyrics, allLyrics } from '../constants'
+import { papyrus } from '../tools/papyrus'
+import userModel from '../models/users/User'
+import { getAllLyrics, allLyrics, STATUS } from '../constants'
 import { isNotEmptyArr } from '../tools/validation'
 import logger from '../tools/logger'
 import deps from '../dependencies'
 
 const { markupKeyboard } = deps
-const { authorizeHandler, userHandler, meetupHandler, notificationHandler } = commandHandlers
+const { authorizeHandler, userHandler, notificationHandler } = commandHandlers
 
 export const commandSelector = (command, ctx) =>
   ({
     [commands.START_CRONS]: () => startCronsCommand(),
-    [commands.START]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
+    [commands.START]: () => textMessageResponse(command, ctx.reply, markupKeyboard, ctx),
     [commands.LYRICS]: () => getLyricsCommand(ctx),
     [commands.INFO]: () => getInfoCommand(ctx),
-    [commands.HELP]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
-    [commands.SEND_MSG_FILE]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
+    [commands.HELP]: () => textMessageResponse(command, ctx.reply, markupKeyboard, ctx),
+    [commands.SEND_MSG_FILE]: () => textMessageResponse(command, ctx.reply, markupKeyboard, ctx),
     [commands.ALL_CAMP_SCHEDULE]: () => getAllCampScheduleCommand(ctx),
-    [commands.ADD_POINTS]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
-    // [commands.ADD_MEETUP]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
-    // [commands.EDIT_MEETUP]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
-    // [commands.DELETE_MEETUP]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
-    // [commands.MANAGE_MEETUPS]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
-    [commands.MANAGE_NOTIFY]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
-    [commands.ADD_NOTIFY]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
-    [commands.EDIT_NOTIFY]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
-    [commands.DELETE_NOTIFY]: () => textMessageResponse(command, ctx.reply, markupKeyboard),
+    [commands.ADD_POINTS]: () => textMessageResponse(command, ctx.reply, markupKeyboard, ctx),
+
     [commands.ALL_CAMP_AUDIENCE]: () => checkGroupTeamCommands(ctx, command),
     [commands.GROUP1]: () => checkGroupTeamCommands(ctx, command),
     [commands.GROUP2]: () => checkGroupTeamCommands(ctx, command),
@@ -46,16 +41,6 @@ export const commandSelector = (command, ctx) =>
     [commands.MY_SCORE]: () => myScoreCommand(ctx),
     [commands.ALL_CAMP_SCORE]: () => allCampScoreCommand(ctx),
     [commands.GET_ALL_SCORES]: () => getAllScoresCommand(ctx),
-    // [commands.EDIT_MEETUP_DAY]: () => editMeetupPropCommand(ctx, { prop: 'day' }),
-    // [commands.EDIT_MEETUP_TIME]: () => editMeetupPropCommand(ctx, { prop: 'time' }),
-    // [commands.EDIT_MEETUP_TITLE]: () => editMeetupPropCommand(ctx, { prop: 'title' }),
-    // [commands.EDIT_MEETUP_FACILITATOR]: () => editMeetupPropCommand(ctx, { prop: 'facilitator' }),
-    // [commands.EDIT_MEETUP_AUDIENCE]: () => editMeetupPropCommand(ctx, { prop: 'audience' }),
-    // [commands.EDIT_MEETUP_LINK]: () => editMeetupPropCommand(ctx, { prop: 'link' }),
-    [commands.EDIT_NOTIFY_DAY]: () => editNotifyPropCommand(ctx, { prop: 'day' }),
-    [commands.EDIT_NOTIFY_TIME]: () => editNotifyPropCommand(ctx, { prop: 'time' }),
-    [commands.EDIT_NOTIFY_MSG]: () => editNotifyPropCommand(ctx, { prop: 'msg' }),
-    [commands.EDIT_NOTIFY_AUDIENCE]: () => editNotifyPropCommand(ctx, { prop: 'audience' }),
   }[command]())
 
 export const subcommandSelector = async (cmd, ctx, document = null) => {
@@ -64,27 +49,13 @@ export const subcommandSelector = async (cmd, ctx, document = null) => {
     [subCommands.LYRICS_CHOOSE_ONE]: () => sendChoosedLyrics(ctx, { typedNumber: cmd }),
     [subCommands.ADD_POINTS_CHOOSE_ONE]: () => checkTypedPointsCommand(ctx, { typedPoints: cmd }),
     [subCommands.ADD_POINTS_TYPED_NUMBER]: () => confirmTypedPointsCommand(ctx, { answer: cmd }),
-    // [subCommands.ADD_MEETUP_TITLE]: () => typedMeetupTitleCommand(ctx, { title: cmd }),
-    // [subCommands.ADD_MEETUP_TIME]: () => typedMeetupTimeCommand(ctx, { time: cmd }),
     [subCommands.ADD_NOTIFY_MSG]: () => typedNotifyMsgCommand(ctx, { msg: cmd }),
     [subCommands.ADD_NOTIFY_TIME]: () => typedNotifyTimeCommand(ctx, { time: cmd }),
-    // [subCommands.ADD_MEETUP_FACILITATOR]: () =>
-    // typedMeetupFacilitatorCommand(ctx, { facilitator: cmd }),
     [subCommands.ADD_NOTIFY_AUDIENCE]: () => typedNotifyAudienceCommand(ctx, { audience: cmd }),
-    // [subCommands.ADD_MEETUP_AUDIENCE]: () => typedMeetupAudienceCommand(ctx, { audience: cmd }),
-    // [subCommands.ADD_MEETUP_LINK]: () => typedMeetupLinkCommand(ctx, { link: cmd }),
     [subCommands.ADD_NOTIFY_CONFIRM]: () => confirmTypedNotifyCommand(ctx, { answer: cmd }),
-    // [subCommands.ADD_MEETUP_CONFIRM]: () => confirmTypedMeetupCommand(ctx, { answer: cmd }),
-
     [subCommands.DELETE_NOTIFY_CONFIRM]: () =>
       confirmTypedDeleteNotifyCommand(ctx, { answer: cmd }),
     [subCommands.DELETE_NOTIFY_CHOOSE_ONE]: () => typedDeleteNotifyCommand(ctx, { time: cmd }),
-    // [subCommands.DELETE_MEETUP_CONFIRM]: () =>
-    // confirmTypedDeleteMeetupCommand(ctx, { answer: cmd }),
-    // [subCommands.DELETE_MEETUP_CHOOSE_ONE]: () => typedDeleteMeetupCommand(ctx, { title: cmd }),
-    // [subCommands.EDIT_MEETUP_CHOOSE_ONE]: () => typedEditMeetupCommand(ctx, { title: cmd }),
-    // [subCommands.EDIT_MEETUP_TYPED_PROP]: () => typedEditMeetupPropCommand(ctx, { prop: cmd }),
-    // [subCommands.EDIT_MEETUP_CONFIRM]: () => confirmTypedEditMeetupCommand(ctx, { answer: cmd }),
     [subCommands.EDIT_NOTIFY_CHOOSE_ONE]: () => typedEditNotifyCommand(ctx, { time: cmd }),
     [subCommands.EDIT_NOTIFY_TYPED_PROP]: () => typedEditNotifyPropCommand(ctx, { prop: cmd }),
     [subCommands.EDIT_NOTIFY_CONFIRM]: () => confirmTypedEditNotifyCommand(ctx, { answer: cmd }),
@@ -108,9 +79,14 @@ const startCronsCommand = async () => {
 
 const getLyricsCommand = async tg => {
   try {
-    const { status } = context.getContext()
+    const { username: nickname } = tg.from
+    const user = await userModel.findOne({ nickname })
+    if (!user || !STATUS.includes(user.status)) {
+      await tg.reply(papyrus.privacySettings, [])
+      return
+    }
     const ctx =
-      status === 'user'
+      user.status === 'user'
         ? contextTreeUser.getCurrentCtx(subCommands.LYRICS_CHOOSE_ONE)
         : contextTreeAdmin.getCurrentCtx(subCommands.LYRICS_CHOOSE_ONE)
 
@@ -122,9 +98,14 @@ const getLyricsCommand = async tg => {
 }
 const sendChoosedLyrics = async (tg, { typedNumber }) => {
   try {
-    const { status } = context.getContext()
+    const { username: nickname } = tg.from
+    const user = await userModel.findOne({ nickname })
+    if (!user || !STATUS.includes(user.status)) {
+      await tg.reply(papyrus.privacySettings, [])
+      return
+    }
     const ctx =
-      status === 'user'
+      user.status === 'user'
         ? contextTreeUser.getCurrentCtx(commands.AUTHORIZE)
         : contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
 
@@ -137,7 +118,8 @@ const sendChoosedLyrics = async (tg, { typedNumber }) => {
 }
 const getAllCampScheduleCommand = async tg => {
   try {
-    const res = await userHandler.getAllCampSchedule()
+    const { username: nickname } = tg.from
+    const res = await userHandler.getAllCampSchedule({ nickname })
     if (res.result !== 'ok') {
       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
       return
@@ -172,7 +154,7 @@ const checkGroupTeamCommands = async (tg, cmd) => {
     await sendMsgFileCommand(tg, { receiver: cmd.substring(1) })
     return
   }
-  textMessageResponse(cmd, tg.reply, markupKeyboard)
+  textMessageResponse(cmd, tg.reply, markupKeyboard, tg)
 }
 const checkDaysCommands = async (tg, cmd) => {
   const { command } = context.getContext()
@@ -188,32 +170,9 @@ const checkDaysCommands = async (tg, cmd) => {
     await editNotifyCommand(tg, { dayCmd: cmd })
     return
   }
-  // if (command === commands.ADD_MEETUP) {
-  //   await addMeetupCommand(tg, { dayCmd: cmd })
-  //   return
-  // }
-  // if (command === commands.DELETE_MEETUP) {
-  //   await deleteMeetupCommand(tg, { dayCmd: cmd })
-  //   return
-  // }
-  // if (command === commands.EDIT_MEETUP) {
-  //   await editMeetupCommand(tg, { dayCmd: cmd })
-  //   return
-  // }
-  textMessageResponse(cmd, tg.reply, markupKeyboard)
+  textMessageResponse(cmd, tg.reply, markupKeyboard, tg)
 }
-// const addMeetupCommand = async (tg, { dayCmd }) => {
-//   try {
-//     const res = await meetupHandler.addMeetup({ dayCmd })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
+
 const addNotifyCommand = async (tg, { dayCmd }) => {
   try {
     const res = await notificationHandler.addNotify({ dayCmd })
@@ -241,9 +200,9 @@ const typedMsgCommand = async (tg, { msg }) => {
 
 const confirmMsgFileSendCommand = async (tg, { answer }) => {
   try {
+    const { username: nickname } = tg.from
     const res = await userHandler.confirmMsgFileSend({ answer: answer.toLowerCase() })
     if (res.result !== 'ok') {
-      //344567232
       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
       return
     }
@@ -254,7 +213,8 @@ const confirmMsgFileSendCommand = async (tg, { answer }) => {
           await tg.telegram.sendMessage(chatID, res.msg)
           await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
         }),
-      )
+      ) &&
+      logger.log(`nickname: ${nickname} - sent message '${res.msg}'`)
   } catch (err) {
     logger.error(err.stack)
   }
@@ -296,42 +256,7 @@ const sendMsgFileCommand = async (tg, { receiver }) => {
     logger.error(err.stack)
   }
 }
-// const editMeetupPropCommand = async (tg, { prop }) => {
-//   try {
-//     const res = await meetupHandler.editMeetupProp({ prop })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
-const editNotifyPropCommand = async (tg, { prop }) => {
-  try {
-    const res = await notificationHandler.editNotifyProp({ prop })
-    if (res.result !== 'ok') {
-      tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-      return
-    }
-    await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-  } catch (err) {
-    logger.error(err.stack)
-  }
-}
-// const typedEditMeetupPropCommand = async (tg, { prop }) => {
-//   try {
-//     const res = await meetupHandler.typedEditMeetupProp({ prop })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
+
 const typedEditNotifyPropCommand = async (tg, { prop }) => {
   try {
     const res = await notificationHandler.typedEditNotifyProp({ prop })
@@ -356,30 +281,7 @@ const deleteNotifyCommand = async (tg, { dayCmd }) => {
     logger.error(err.stack)
   }
 }
-// const deleteMeetupCommand = async (tg, { dayCmd }) => {
-//   try {
-//     const res = await meetupHandler.deleteMeetup({ dayCmd })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
-// const editMeetupCommand = async (tg, { dayCmd }) => {
-//   try {
-//     const res = await meetupHandler.editMeetup({ dayCmd })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
+
 const editNotifyCommand = async (tg, { dayCmd }) => {
   try {
     const res = await notificationHandler.editNotify({ dayCmd })
@@ -392,18 +294,7 @@ const editNotifyCommand = async (tg, { dayCmd }) => {
     logger.error(err.stack)
   }
 }
-// const typedDeleteMeetupCommand = async (tg, { title }) => {
-//   try {
-//     const res = await meetupHandler.typedDeleteMeetup({ title })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
+
 const typedDeleteNotifyCommand = async (tg, { time }) => {
   try {
     const res = await notificationHandler.typedDeleteNotify({ time })
@@ -416,18 +307,7 @@ const typedDeleteNotifyCommand = async (tg, { time }) => {
     logger.error(err.stack)
   }
 }
-// const typedEditMeetupCommand = async (tg, { title }) => {
-//   try {
-//     const res = await meetupHandler.typedEditMeetup({ title })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
+
 const typedEditNotifyCommand = async (tg, { time }) => {
   try {
     const res = await notificationHandler.typedEditNotify({ time })
@@ -440,30 +320,7 @@ const typedEditNotifyCommand = async (tg, { time }) => {
     logger.error(err.stack)
   }
 }
-// const typedMeetupLinkCommand = async (tg, { link }) => {
-//   try {
-//     const res = await meetupHandler.typedMeetupLink({ link })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
-// const confirmTypedMeetupCommand = async (tg, { answer }) => {
-//   try {
-//     const res = await meetupHandler.confirmTypedMeetup({ answer: answer.toLowerCase() })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
+
 const confirmTypedNotifyCommand = async (tg, { answer }) => {
   try {
     const res = await notificationHandler.confirmTypedNotify({ answer: answer.toLowerCase() })
@@ -476,18 +333,7 @@ const confirmTypedNotifyCommand = async (tg, { answer }) => {
     logger.error(err.stack)
   }
 }
-// const confirmTypedDeleteMeetupCommand = async (tg, { answer }) => {
-//   try {
-//     const res = await meetupHandler.confirmTypedDeleteMeetup({ answer: answer.toLowerCase() })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
+
 const confirmTypedDeleteNotifyCommand = async (tg, { answer }) => {
   try {
     const res = await notificationHandler.confirmTypedDeleteNotify({ answer: answer.toLowerCase() })
@@ -500,18 +346,7 @@ const confirmTypedDeleteNotifyCommand = async (tg, { answer }) => {
     logger.error(err.stack)
   }
 }
-// const confirmTypedEditMeetupCommand = async (tg, { answer }) => {
-//   try {
-//     const res = await meetupHandler.confirmTypedEditMeetup({ answer: answer.toLowerCase() })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
+
 const confirmTypedEditNotifyCommand = async (tg, { answer }) => {
   try {
     const res = await notificationHandler.confirmTypedEditNotify({ answer: answer.toLowerCase() })
@@ -524,19 +359,6 @@ const confirmTypedEditNotifyCommand = async (tg, { answer }) => {
     logger.error(err.stack)
   }
 }
-
-// const typedMeetupTitleCommand = async (tg, { title }) => {
-//   try {
-//     const res = await meetupHandler.typedMeetupTitle({ title })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
 
 const typedNotifyMsgCommand = async (tg, { msg }) => {
   try {
@@ -551,18 +373,6 @@ const typedNotifyMsgCommand = async (tg, { msg }) => {
   }
 }
 
-// const typedMeetupAudienceCommand = async (tg, { audience }) => {
-//   try {
-//     const res = await meetupHandler.typedMeetupAudience({ audience })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
 const typedNotifyAudienceCommand = async (tg, { audience }) => {
   try {
     const res = await notificationHandler.typedNotifyAudience({ audience })
@@ -575,32 +385,6 @@ const typedNotifyAudienceCommand = async (tg, { audience }) => {
     logger.error(err.stack)
   }
 }
-// const typedMeetupFacilitatorCommand = async (tg, { facilitator }) => {
-//   try {
-//     const res = await meetupHandler.typedMeetupFacilitator({ facilitator })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
-
-// const typedMeetupTimeCommand = async (tg, { time }) => {
-//   try {
-//     const res = await meetupHandler.typedMeetupTime({ time })
-//     if (res.result !== 'ok') {
-//       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//       return
-//     }
-//     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
-//   } catch (err) {
-//     logger.error(err.stack)
-//   }
-// }
-
 const typedNotifyTimeCommand = async (tg, { time }) => {
   try {
     const res = await notificationHandler.typedNotifyTime({ time })
@@ -625,7 +409,8 @@ const checkTypedPointsCommand = async (tg, { typedPoints }) => {
 
 const confirmTypedPointsCommand = async (tg, { answer }) => {
   try {
-    const res = await userHandler.confirmTypedPoints({ answer: answer.toLowerCase() })
+    const { username: nickname } = tg.from
+    const res = await userHandler.confirmTypedPoints({ nickname, answer: answer.toLowerCase() })
     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
     res.chatID && (await tg.telegram.sendMessage(res.chatID, res.additional))
   } catch (err) {
@@ -664,7 +449,8 @@ const myScoreCommand = async tg => {
 
 const allCampScoreCommand = async tg => {
   try {
-    const res = await userHandler.getAllCampScore()
+    const { username: nickname } = tg.from
+    const res = await userHandler.getAllCampScore({ nickname })
     if (res.result !== 'ok') {
       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
       return
@@ -676,7 +462,8 @@ const allCampScoreCommand = async tg => {
 }
 const getAllScoresCommand = async tg => {
   try {
-    const res = await userHandler.getAllScores()
+    const { username: nickname } = tg.from
+    const res = await userHandler.getAllScores({ nickname })
     if (res.result !== 'ok') {
       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
       return
@@ -693,22 +480,37 @@ const getAllScoresCommand = async tg => {
 
 const addPointsCommand = async (tg, cmd) => {
   try {
-    const res = await userHandler.getGroupList({ group: cmd.substring(1) })
+    const { username: nickname } = tg.from
+    const res = await userHandler.getGroupList({ nickname, group: cmd.substring(1) })
     if (res.result !== 'ok') {
       tg.reply(res.papyrus, markupKeyboard(res.keyboard))
       return
     }
     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
   } catch (err) {
+    console.log(err.message)
     logger.error(err.stack)
   }
 }
 
-const textMessageResponse = async (command, fn, keyboard) => {
+const textMessageResponse = async (command, fn, keyboard, tg) => {
   try {
-    const { status } = context.getContext()
+    const { username: nickname } = tg.from
+    const user = await userModel.findOne({ nickname })
+    if (!user || !STATUS.includes(user.status)) {
+      await tg.reply(papyrus.privacySettings, [])
+      return
+    }
+    if (command === commands.ADD_POINTS && user.status !== 'admin') {
+      await tg.reply(papyrus.privateCommand, markupUser.afterAuthorize())
+      return
+    }
+    if (command === commands.SEND_MSG_FILE && user.status !== 'admin') {
+      await tg.reply(papyrus.privateCommand, markupUser.afterAuthorize())
+      return
+    }
     const ctx =
-      status === 'user'
+      user.status === 'user'
         ? contextTreeUser.getCurrentCtx(command)
         : contextTreeAdmin.getCurrentCtx(command)
 

@@ -265,7 +265,7 @@ ctxTreeAdmin.insert(
 ctxTreeAdmin.insert(
   {
     command: commands.ALL_CAMP_SCHEDULE,
-    keyboard: markupAdmin.afterAllSchedule(),
+    keyboard: markupAdmin.afterAuthorize(),
     papyrus: papyrus.getAllScheduleMsg,
   },
   commands.AUTHORIZE,

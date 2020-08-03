@@ -1,9 +1,10 @@
 import { context, contextTreeAdmin, contextTreeUser } from '../tools/context'
-import { commands, subCommands } from '../tools/markup'
+import { commands, subCommands, markupUser } from '../tools/markup'
 import { TEAMS, STATUS, ALL_CAMP_SCHEDULE_LINK, getTeamBase, getTeamBaseChat } from '../constants'
 import { papyrus } from '../tools/papyrus'
 import { textToPdf } from '../tools/pdf'
 import { isNumberPoints, isYesNo, isTeam, isGroup } from '../tools/validation'
+import logger from '../tools/logger'
 // todo move contex to db
 const getEmptyTeamScores = teams => teams.reduce((accum, team) => ({ ...accum, [team]: 0 }), {})
 
@@ -21,7 +22,7 @@ const getMyScore = async (body, model) => {
 }
 
 const getAllCampScore = async (body, model) => {
-  const { status } = context.getContext()
+  const { nickname } = body
   const users = await model.find({ status: STATUS[0] })
 
   const emptyTeamScores = getEmptyTeamScores(TEAMS)
@@ -34,6 +35,8 @@ const getAllCampScore = async (body, model) => {
     (accum, team) => `${accum}${team} - ${filledTeamScores[team]}\n `,
     '',
   )
+  const { status } = await model.findOne({ nickname })
+
   const node =
     status === STATUS[0]
       ? contextTreeUser.getCurrentCtx(commands.ALL_CAMP_SCORE)
@@ -44,6 +47,15 @@ const getAllCampScore = async (body, model) => {
 }
 
 const getAllScores = async (body, model) => {
+  const { nickname } = body
+  const user = await model.findOne({ nickname })
+  if (user.status !== 'admin')
+    return {
+      result: 'failed',
+      papyrus: papyrus.privateCommand,
+      keyboard: markupUser.afterAuthorize(),
+    }
+
   const users = await model.find({ status: STATUS[0] })
 
   const textScores = users.reduce((accum, { name, score }) => `${accum}${name} - ${score}\n `, '')
@@ -54,7 +66,15 @@ const getAllScores = async (body, model) => {
 }
 
 const getGroupList = async (body, model) => {
-  const { group } = body
+  const { group, nickname } = body
+  const { status } = await model.findOne({ nickname })
+  if (status !== 'admin')
+    return {
+      result: 'failed',
+      papyrus: papyrus.privateCommand,
+      keyboard: markupUser.afterAuthorize(),
+    }
+
   const users = await model.find({ group, status: STATUS[0] })
   //todo res failed
   //todo sort by numberList
@@ -80,7 +100,7 @@ const checkTypedPoints = async (body, model) => {
 }
 
 const confirmTypedPoints = async (body, model) => {
-  const { answer } = body
+  const { answer, nickname } = body
   const { typedPoints, groupList } = context.getContext()
   let additional = ``
   let chatID
@@ -91,6 +111,7 @@ const confirmTypedPoints = async (body, model) => {
     await model.findOneAndUpdate({ numberList, group: groupList }, { $set: user }, { new: true })
     additional = `You’ve given the following  points: ${countPoints}\n`
     chatID = user.chatID
+    logger.log(`nickname: ${nickname} - added ${Number(countPoints)} for '${user.nickname}'`)
   }
 
   const node = contextTreeAdmin.getCurrentCtx(commands.AUTHORIZE)
@@ -182,7 +203,12 @@ const confirmMsgFileSend = async (body, model) => {
   return { result: 'ok', papyrus: node.papyrus, keyboard: node.keyboard }
 }
 const getAllCampSchedule = async (body, model) => {
-  const node = contextTreeUser.getCurrentCtx(commands.ALL_CAMP_SCHEDULE)
+  const { nickname } = body
+  const { status } = await model.findOne({ nickname })
+  const node =
+    status === STATUS[0]
+      ? contextTreeUser.getCurrentCtx(commands.ALL_CAMP_SCHEDULE)
+      : contextTreeAdmin.getCurrentCtx(commands.ALL_CAMP_SCHEDULE)
   context.emit('changeContext', { ...node })
   return { result: 'ok', papyrus: node.papyrus(ALL_CAMP_SCHEDULE_LINK), keyboard: node.keyboard }
 }
@@ -209,8 +235,8 @@ const getInfo = async (body, model) => {
 export default model => ({
   getInfo: body => getInfo(body, model),
   getMyScore: body => getMyScore(body, model),
-  getAllCampScore: () => getAllCampScore(null, model),
-  getAllScores: () => getAllScores(null, model),
+  getAllCampScore: body => getAllCampScore(body, model),
+  getAllScores: body => getAllScores(body, model),
   getGroupList: body => getGroupList(body, model),
   checkTypedPoints: body => checkTypedPoints(body, model),
   confirmTypedPoints: body => confirmTypedPoints(body, model),
@@ -219,5 +245,5 @@ export default model => ({
   loadedFile: body => loadedFile(body, model),
   typedMsg: body => typedMsg(body, model),
   confirmMsgFileSend: body => confirmMsgFileSend(body, model),
-  getAllCampSchedule: () => getAllCampSchedule(null, model),
+  getAllCampSchedule: body => getAllCampSchedule(body, model),
 })

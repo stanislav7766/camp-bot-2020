@@ -2,6 +2,7 @@ export const papyrus = {
   getInitialGreeting: `Welcome to MASCOT bot! Select /authorize in order to register.`,
   getHelpInfo:
     'MASCOT bot is aimed to handle needs of participants during Online MASCOT2020. Use /authorize command in order to register. Note: only campers, JCs and staff members of MASCOT2020 are accepted.',
+  privateCommand: 'This is private command',
   getInfoMsg: ({ team, group, teamChat, teamBase }) => `
   \t
   Your team: ${team}
