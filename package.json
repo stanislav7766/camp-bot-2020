@@ -5,7 +5,8 @@
   "author": "stanislav7766",
   "scripts": {
     "live": "nodemon",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "start":  "yarn build && node dist/index.js"
   },
   "license": "MIT",
   "dependencies": {
