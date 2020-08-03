@@ -4,10 +4,10 @@
   "main": "index.js",
   "author": "stanislav7766",
   "scripts": {
-    "heroku-prebild":"npm install --dev",
+    "heroku-prebild": "npm install --dev",
     "live": "nodemon",
     "build": "webpack --mode production",
-    "start":  "npm install --dev && node dist/index.js"
+    "start": "npm install --dev && node dist/index.js"
   },
   "license": "MIT",
   "dependencies": {

@@ -4,7 +4,7 @@ import { commandSelector, subcommandSelector, isCommand, isSubCommand } from './
 import logger from './tools/logger'
 
 const { Telegraf } = deps
-
+const PORT = process.env.PORT || 5000
 class Application {
   constructor() {
     this.app = new Telegraf(process.env.BOT_ACCOUNT_TOKEN)
@@ -33,6 +33,7 @@ class Application {
     })
   }
   async start() {
+    require('http').createServer(this.app.webhookCallback('/secret-path')).listen(PORT)
     await this.app.launch()
     // await this.mapCronJobs()
     logger.log('Bot is running ✅')
