@@ -209,11 +209,11 @@ const confirmMsgFileSendCommand = async (tg, { answer }) => {
     isNotEmptyArr(res.chatsID) &&
       Promise.all(
         res.chatsID.map(async chatID => {
-          res.file && (await tg.telegram.sendDocument(chatID, res.file.file_id, res.file.file_name))
           await tg.telegram.sendMessage(chatID, res.msg)
-          await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
+          res.file && (await tg.telegram.sendDocument(chatID, res.file.file_id, res.file.file_name))
         }),
       ) &&
+      (await tg.reply(res.papyrus, markupKeyboard(res.keyboard))) &&
       logger.log(`nickname: ${nickname} - sent message '${res.msg}'`)
   } catch (err) {
     logger.error(err.stack)
@@ -488,7 +488,6 @@ const addPointsCommand = async (tg, cmd) => {
     }
     await tg.reply(res.papyrus, markupKeyboard(res.keyboard))
   } catch (err) {
-    console.log(err.message)
     logger.error(err.stack)
   }
 }
